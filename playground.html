@@ -12,8 +12,7 @@
   --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA; --ink:#18243A; --muted:#5B6880; --line:#D5DCE6;
   --accent:#2952D9; --accent-ink:#FFFFFF; --accent-soft:#E4EAFC; --accent-strong:#1F3FAE;
   --loop:#D08A12; --loop-soft:#FCF1DC; --loop-ink:#8A5A06;
-  --ok:#23845A; --ok-soft:#E1F3EA; --bad:#C23B32; --bad-soft:#FBE7E5;
-  --stage:#FAFBFD;
+  --ok:#23845A; --ok-soft:#E1F3EA; --bad:#C23B32; --bad-soft:#FBE7E5; --stage:#FAFBFD;
   color-scheme:light;
 }
 @media (prefers-color-scheme: dark){
@@ -44,15 +43,16 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 28px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
 .top h1{font-size:1.3rem;font-weight:700}
 .top p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
-.top-actions{display:flex;gap:8px;align-items:center}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 
-.layout{display:grid;grid-template-columns:250px minmax(0,1fr);gap:20px;padding:20px 28px 40px;max-width:1500px;margin:0 auto;align-items:start}
-.nav{position:sticky;top:20px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px}
-.nav a{display:block;padding:7px 10px;border-radius:7px;text-decoration:none;color:var(--ink);font-size:.9rem}
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px;padding:20px 28px 40px;max-width:1500px;margin:0 auto;align-items:start}
+.nav{position:sticky;top:20px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;max-height:calc(100vh - 40px);overflow:auto}
+.nav a{display:block;padding:5px 10px;border-radius:7px;text-decoration:none;color:var(--ink);font-size:.88rem}
 .nav a:hover{background:var(--surface-2)}
 .nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent-strong);font-weight:600}
-.nav .nid{display:block;font-size:.72rem;color:var(--muted);font-weight:400}
-.nav hr{border:0;border-top:1px solid var(--line);margin:8px 0}
+.nav .ngroup{margin-top:10px;padding:0 10px 2px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.nav .ngroup span{font-weight:400}
+.nav .sub{padding-left:20px}
 
 .btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:7px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block}
 .btn:hover{background:var(--surface-2)}
@@ -62,17 +62,22 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .intro h2{font-size:1.1rem;margin-bottom:6px}
 .intro p{margin:0 0 8px;max-width:75ch}
 .intro p:last-child{margin-bottom:0}
-.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:6px}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
 .card h3{font-size:1rem}
-.card .tpl{font-size:.8rem;color:var(--muted)}
-.card p{margin:0;font-size:.88rem}
-.card .btn{align-self:flex-start;margin-top:6px}
+.card .tpl{font-size:.78rem;color:var(--muted);margin:2px 0 10px}
+.card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.card li a{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink);font-size:.9rem}
+.card li a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.ui-tag{font-size:.74rem;color:var(--muted);white-space:nowrap}
 
 /* Scenario view */
 .sc-head{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
 .sc-head h2{font-size:1.2rem}
 .sc-head .tpl{margin:4px 0 0;color:var(--muted);font-size:.85rem}
+.siblings{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.siblings a{font-size:.82rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.siblings a[aria-current="page"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-strong);font-weight:600}
 .setup{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
 .setup label{display:flex;flex-direction:column;gap:4px;font-size:.84rem;font-weight:500}
 .setup input[type=number]{width:120px;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px}
@@ -86,7 +91,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .state-pill{font-size:.78rem;font-weight:600;padding:3px 10px;border-radius:999px}
 .state-pill.true{background:var(--loop-soft);color:var(--loop-ink)}
 .state-pill.false{background:var(--ok-soft);color:var(--ok)}
-.stage{background:var(--stage);padding:20px;min-height:220px;border-radius:0 0 10px 10px}
+.stage{background:var(--stage);padding:20px;min-height:240px}
 .meter{display:flex;gap:16px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid var(--line);font-size:.84rem;color:var(--muted)}
 .meter strong{color:var(--ink)}
 
@@ -95,31 +100,52 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .t-btn:hover{filter:brightness(1.07)}
 .t-btn.secondary{background:var(--surface);color:var(--accent)}
 .t-btn:disabled{background:var(--surface-2);border-color:var(--line);color:var(--muted);cursor:not-allowed;filter:none}
-.t-btn.delete-button{background:var(--surface);color:var(--bad);border-color:var(--bad);padding:6px 12px}
-.t-btn.delete-button:hover{background:var(--bad-soft)}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.t-btn.danger{background:var(--surface);color:var(--bad);border-color:var(--bad);padding:5px 12px}
+.t-btn.danger:hover{background:var(--bad-soft)}
+.row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
 .stack{display:flex;flex-direction:column;gap:12px}
-.del-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
-.del-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.list li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
 .products{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
 .product{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.88rem;text-align:center}
 .indicator{font-weight:600;margin:0}
 .success{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);border-radius:8px;padding:10px 14px;font-weight:600;margin:0}
 .notice{color:var(--muted);margin:0;font-size:.9rem}
-.flash{color:var(--bad);margin:0;font-size:.88rem}
-.badge{display:inline-block;padding:4px 12px;border-radius:999px;font-weight:600;font-size:.9rem}
+.flash{background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);border-radius:8px;padding:8px 12px;margin:0;font-size:.9rem;font-weight:500}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-weight:600;font-size:.85rem}
 .badge.pending{background:var(--loop-soft);color:var(--loop-ink)}
 .badge.done{background:var(--ok-soft);color:var(--ok)}
-.field{display:flex;flex-direction:column;gap:4px;max-width:260px}
+.field{display:flex;flex-direction:column;gap:4px;max-width:260px;flex:1;min-width:160px}
 .field label{font-size:.85rem;font-weight:500}
 .field input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
-.tasks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
-.tasks li{display:flex;gap:8px;align-items:center}
-.tasks input{width:18px;height:18px;accent-color:var(--ok)}
+.field input[readonly]{background:var(--surface-2)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.checks label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.checks input{width:18px;height:18px;accent-color:var(--ok)}
 .steps-bar{display:flex;gap:6px;flex-wrap:wrap}
 .steps-bar span{padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.82rem;color:var(--muted)}
 .steps-bar span.on{border-color:var(--accent);color:var(--accent-strong);background:var(--accent-soft);font-weight:600}
-.status-chip{display:inline-block;background:var(--loop-soft);color:var(--loop-ink);border-radius:6px;padding:4px 10px;font-weight:600;margin:0}
+.status-chip{display:inline-block;background:var(--loop-soft);color:var(--loop-ink);border-radius:6px;padding:4px 10px;font-weight:600;margin:0;align-self:flex-start}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--surface)}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:.8rem}
+.dialog-backdrop{position:relative;border-radius:10px;padding:18px;background:rgba(24,36,58,.35)}
+.dialog{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;max-width:340px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.dialog h3{font-size:1rem;margin-bottom:4px}
+.dialog p{margin:0 0 12px;font-size:.9rem}
+.slide{height:130px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:1.2rem;color:#fff}
+.progress{height:14px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.progress span{display:block;height:100%;background:var(--accent);transition:width .2s}
+.timer{font-size:1.6rem;font-weight:700;margin:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips span{background:var(--accent-soft);color:var(--accent-strong);border-radius:999px;padding:2px 10px;font-size:.84rem;font-weight:500}
+fieldset{border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:0;background:var(--surface)}
+legend{font-weight:600;padding:0 4px}
+.radio{display:flex;gap:8px;align-items:center;padding:4px 0;cursor:pointer}
+.radio input{width:17px;height:17px;accent-color:var(--accent)}
+.skeleton{height:12px;border-radius:6px;background:var(--line);margin:6px 0;max-width:320px}
+.download{display:inline-block;font-weight:600}
 
 /* ContextQA steps */
 .cq{padding:14px 16px}
@@ -132,7 +158,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 .cq .tip{font-size:.8rem;color:var(--muted);margin:10px 0 0}
 .cq code{font-size:.78rem;background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:0 4px}
 .copy-row{padding:0 16px 14px}
-/* Text written by ::before is not page text, so the docs never satisfy a page-text check */
+/* Text written by ::before is not page text, so instructions never satisfy a page-text check */
 .ref::before{content:"\201C" attr(data-text) "\201D";font-weight:600}
 
 .toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:10}
@@ -141,9 +167,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 @media (max-width:1050px){ .grid2{grid-template-columns:1fr} }
 @media (max-width:780px){
   .layout{grid-template-columns:1fr;padding:14px}
-  .nav{position:static;display:flex;overflow-x:auto;gap:4px}
-  .nav a{white-space:nowrap}
-  .nav .nid,.nav hr{display:none}
+  .nav{position:static;max-height:260px}
   .top{padding:14px}
 }
 @media (prefers-reduced-motion: reduce){ *{transition:none !important} }
@@ -154,7 +178,7 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 <header class="top">
   <div>
     <h1>While loop practice page</h1>
-    <p>A live example for every ContextQA While template. Point your test at a scenario and watch the loop run until the condition turns false.</p>
+    <p>33 live scenarios, 3 for every ContextQA While template. Point your test at a scenario and watch the loop run until the condition turns false.</p>
   </div>
   <div class="top-actions">
     <a class="btn" href="index.html">Open the test builder</a>
@@ -169,360 +193,377 @@ button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(-
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
+/* ---------- Helpers ---------- */
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-/* R() writes a value through CSS so it is visible to people but is not page text */
-const R = t => '<span class="ref" data-text="' + esc(t) + '"></span>';
+const R = t => '<span class="ref" data-text="' + esc(t) + '"></span>';  /* shown to people, not page text */
 const Q = t => '“' + esc(t) + '”';
 const $ = s => document.querySelector(s);
+const on = s => s.never || s.n < s.count;          /* the usual "keep looping" rule */
+const left = s => s.never ? 'many' : s.count - s.n;
+const B = (id, text, act, o = {}) => '<button type="button" class="t-btn ' + (o.cls || '') + '"' + (o.multi ? '' : ' id="' + id + '"') +
+  ' data-testid="' + id + '" data-do="' + act + '"' + (o.i !== undefined ? ' data-i="' + o.i + '"' : '') + (o.disabled ? ' disabled' : '') +
+  (o.aria ? ' aria-label="' + esc(o.aria) + '"' : '') + '>' + esc(text) + '</button>';
+const IN = (id, label, value, o = {}) => '<div class="field"><label for="' + id + '">' + esc(label) + '</label><input id="' + id + '" data-testid="' + id + '" name="' + id + '"' +
+  ' value="' + esc(value) + '"' + (o.ro ? ' readonly' : '') + (o.bind ? ' data-bind="' + o.bind + '"' : '') + (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + ' autocomplete="off"></div>';
+const OK = (id, text) => '<p class="success" id="' + id + '" data-testid="' + id + '">' + esc(text) + '</p>';
+const ERR = (id, text) => '<p class="flash" id="' + id + '" data-testid="' + id + '">' + esc(text) + '</p>';
+const NOTE = t => '<p class="notice">' + t + '</p>';
+const ROW = (...x) => '<div class="row">' + x.join('') + '</div>';
+const STACK = (...x) => '<div class="stack">' + x.join('') + '</div>';
+const xp = id => '<code>(//*[@data-testid=\'' + id + '\'])[1]</code>';
+const WAIT = 'Wait for ' + Q('1') + ' seconds';
 
-/* ---------- Scenarios: one per While template ---------- */
-const SC = [
-{
-  key:'while-191', id:191, name:'verifyElementVisibleWhile', title:'Element is visible',
-  template:'While element #{label} is visible on the page', example:'Delete buttons',
-  about:'Keep clicking the first Delete button until no Delete buttons are left.',
-  countLabel:'Delete buttons to start with',
-  init:s => { s.next = s.count + 1; s.items = Array.from({length:s.count}, (_, i) => i + 1); },
-  isTrue:s => s.items.length > 0,
-  render:s => '<div class="stack">' +
-    '<div class="row"><button class="t-btn secondary" id="add-delete-button" data-testid="add-delete-button" data-do="add">Add delete button</button>' +
-    '<span class="notice" id="delete-count">' + (s.items.length ? s.items.length + ' delete button' + (s.items.length === 1 ? '' : 's') + ' left' : '') + '</span></div>' +
-    (s.items.length
-      ? '<ul class="del-list" id="delete-list">' + s.items.map((n, i) =>
-          '<li><span>Item ' + n + '</span><button class="t-btn delete-button" data-testid="delete-button" data-do="del" data-i="' + i + '" aria-label="Delete">Delete</button></li>').join('') + '</ul>'
-      : '<p class="success" id="all-deleted">All delete buttons are gone</p>') +
-    (s.never ? '<p class="notice">Never-stop is on: every delete adds a new Delete button.</p>' : '') + '</div>',
-  act:{
-    add:s => { s.items.push(s.next++); },
-    del:(s, el) => { s.items.splice(+el.dataset.i, 1); s.runs++; if(s.never) s.items.push(s.next++); }
-  },
-  docs:s => ({
-    cond:'While element ' + Q('Delete button') + ' is visible on the page',
-    inside:['Click on ' + Q('Delete button')],
-    after:['Verify that the current page displays text ' + Q('All delete buttons are gone')],
-    tip:'Every Delete button has <code>data-testid="delete-button"</code>. To always click the first one, use the locator <code>(//button[@data-testid=\'delete-button\'])[1]</code>.'
-  })
-},
-{
-  key:'while-190', id:190, name:'verifyElementEnabledWhile', title:'Element is enabled',
-  template:'While element #{label} is enabled', example:'Pagination',
-  about:'Click Next page until you reach the last page and the button turns disabled.',
-  countLabel:'Pages after page 1',
-  init:s => { s.page = 1; },
-  isTrue:s => s.never || s.page < s.count + 1,
-  render:s => {
-    const last = !s.never && s.page === s.count + 1;
-    let products = '';
-    for(let i = 1; i <= 3; i++) products += '<div class="product">Product ' + ((s.page - 1) * 3 + i) + '</div>';
-    return '<div class="stack"><p class="indicator" id="page-indicator" data-testid="page-indicator">Page ' + s.page + ' of ' + (s.never ? 'many' : s.count + 1) + (last ? ' (Last page)' : '') + '</p>' +
-      '<div class="products">' + products + '</div>' +
-      '<div class="row"><button class="t-btn" id="next-page-button" data-testid="next-page-button" data-do="next"' + (SC_isTrue('while-190', s) ? '' : ' disabled') + '>Next page</button></div></div>';
-  },
-  act:{ next:s => { s.page++; s.runs++; } },
-  docs:s => ({
-    cond:'While element ' + Q('Next page button') + ' is enabled',
-    inside:['Click on ' + Q('Next page button')],
-    after:['Verify that the ' + Q('Page indicator') + ' text contains ' + Q('Last page')],
-    tip:'Locators: <code>#next-page-button</code> and <code>#page-indicator</code>.'
-  })
-},
-{
-  key:'while-582', id:582, name:'verifyElementDisabledWhile', title:'Element is disabled',
-  template:'While element #{label} is disabled', example:'Task checklist',
-  about:'Submit stays disabled until every task is done. Click Complete next task until it turns on.',
-  countLabel:'Number of tasks',
-  init:s => { s.done = 0; s.submitted = false; s.flash = ''; },
-  isTrue:s => s.never || s.done < s.count,
-  render:s => {
-    let tasks = '';
-    for(let i = 1; i <= s.count; i++) tasks += '<li><input type="checkbox" disabled' + (i <= s.done ? ' checked' : '') + ' aria-label="Task ' + i + '"><span>Task ' + i + '</span></li>';
-    return '<div class="stack">' + (s.count ? '<ul class="tasks">' + tasks + '</ul>' : '<p class="notice">No tasks. Submit is ready.</p>') +
-      (s.flash ? '<p class="flash">' + esc(s.flash) + '</p>' : '') +
-      '<div class="row"><button class="t-btn secondary" id="complete-next-task-button" data-testid="complete-next-task-button" data-do="complete">Complete next task</button>' +
-      '<button class="t-btn" id="submit-button" data-testid="submit-button" data-do="submit"' + (SC_isTrue('while-582', s) ? ' disabled' : '') + '>Submit</button></div>' +
-      (s.submitted ? '<p class="success" id="form-submitted">Form submitted</p>' : '') + '</div>';
-  },
-  act:{
-    complete:s => { s.runs++; if(s.never){ s.flash = 'Task failed. Try again.'; return; } s.flash = ''; if(s.done < s.count) s.done++; },
-    submit:s => { s.submitted = true; }
-  },
-  docs:s => ({
-    cond:'While element ' + Q('Submit button') + ' is disabled',
-    inside:['Click on ' + Q('Complete next task button')],
-    after:['Click on ' + Q('Submit button'), 'Verify that the current page displays text ' + Q('Form submitted')],
-    tip:'Locators: <code>#complete-next-task-button</code> and <code>#submit-button</code>.'
-  })
-},
-{
-  key:'while-553', id:553, name:'verifyElementNotVisibleWhile', title:'Element is not visible',
-  template:'While element #{label} is not visible on the page', example:'Retry connection',
-  about:'Click Retry connection until the success message appears.',
-  countLabel:'Retries before success',
-  init:s => { s.tries = 0; },
-  isTrue:s => s.never || s.tries < s.count,
-  render:s => '<div class="stack"><p class="notice" id="connection-status">' + (SC_isTrue('while-553', s) ? 'Not connected. Attempts so far: ' + s.tries : 'Attempts: ' + s.tries) + '</p>' +
-    '<div class="row"><button class="t-btn" id="retry-connection-button" data-testid="retry-connection-button" data-do="retry">Retry connection</button></div>' +
-    (SC_isTrue('while-553', s) ? '' : '<p class="success" id="success-message" data-testid="success-message">Connected successfully</p>') + '</div>',
-  act:{ retry:s => { s.tries++; s.runs++; } },
-  docs:s => ({
-    cond:'While element ' + Q('Success message') + ' is not visible on the page',
-    inside:['Click on ' + Q('Retry connection button')],
-    after:['Verify that the ' + Q('Success message') + ' is present (available/displayed/etc.)'],
-    tip:'The success message has <code>id="success-message"</code> and only exists on the page once it shows.'
-  })
-},
-{
-  key:'while-554', id:554, name:'verifyTextVisibleWhile', title:'Text is visible',
-  template:'While text #{label} is visible on the page', example:'Work queue',
-  about:'A status text shows while items are in the queue. Process items until it changes.',
-  countLabel:'Items in the queue',
-  init:s => { s.left = s.count; },
-  isTrue:s => s.left > 0,
-  render:s => '<div class="stack">' + (s.left > 0
-      ? '<p class="status-chip" id="queue-status" data-testid="queue-status">Processing</p><p class="notice">' + s.left + ' item' + (s.left === 1 ? '' : 's') + ' left in the queue</p>'
-      : '<p class="success" id="queue-status" data-testid="queue-status">All items processed</p>') +
-    '<div class="row"><button class="t-btn" id="process-next-item-button" data-testid="process-next-item-button" data-do="process">Process next item</button></div></div>',
-  act:{ process:s => { s.runs++; if(!s.never && s.left > 0) s.left--; } },
-  docs:s => ({
-    cond:'While text ' + R('Processing') + ' is visible on the page',
-    inside:['Click on ' + Q('Process next item button')],
-    after:['Verify that the current page displays text ' + Q('All items processed')],
-    tip:'For this template the text goes in the element field. The status text has <code>id="queue-status"</code>.'
-  })
-},
-{
-  key:'while-694', id:694, name:'verifyTextPresentWhile', title:'Page shows text',
-  template:'While the current page displays text #{test-data}', example:'Product list',
-  about:'Keep loading more products until the button with that text disappears from the page.',
-  countLabel:'Times to load more',
-  init:s => { s.loads = 0; },
-  isTrue:s => s.never || s.loads < s.count,
-  render:s => {
-    let products = '';
-    for(let i = 1; i <= 3 + s.loads * 3; i++) products += '<div class="product">Product ' + i + '</div>';
-    return '<div class="stack"><div class="products" id="product-list">' + products + '</div>' +
-      (SC_isTrue('while-694', s)
-        ? '<div class="row"><button class="t-btn" id="load-more-button" data-testid="load-more-button" data-do="load">Load more</button></div>'
-        : '<p class="success" id="end-of-list">You have seen all products</p>') + '</div>';
-  },
-  act:{ load:s => { s.loads++; s.runs++; } },
-  docs:s => ({
-    cond:'While the current page displays text ' + R('Load more'),
-    inside:['Click on the ' + R('Load more') + ' button'],
-    after:['Verify that the current page displays text ' + Q('You have seen all products')],
-    tip:'The button has <code>id="load-more-button"</code>. Its text appears only on that button, so the page check is reliable.'
-  })
-},
-{
-  key:'while-695', id:695, name:'verifyTextAbsentWhile', title:'Page does not show text',
-  template:'While the current page does not display text #{test-data}', example:'Checkout',
-  about:'Go through the checkout steps until the confirmation text appears.',
-  countLabel:'Checkout steps',
-  init:s => { s.step = 0; },
-  isTrue:s => s.never || s.step < s.count,
-  render:s => {
-    const names = ['Cart', 'Shipping', 'Payment', 'Review'];
-    const going = SC_isTrue('while-695', s);
-    const total = s.never ? names.length : s.count;
-    const cur = s.never ? s.step % names.length : s.step;
-    let bar = '';
-    for(let i = 0; i < total; i++) bar += '<span class="' + (going && i === cur ? 'on' : '') + '">' + esc(names[i % 4] + (i >= 4 ? ' ' + (i + 1) : '')) + '</span>';
-    return '<div class="stack">' + (total ? '<div class="steps-bar" aria-label="Checkout steps">' + bar + '</div>' : '') +
-      (going
-        ? '<p class="notice" id="checkout-step">Checkout step ' + (cur + 1) + ' of ' + total + '</p><div class="row"><button class="t-btn" id="next-checkout-step-button" data-testid="next-checkout-step-button" data-do="step">Next checkout step</button></div>'
-        : '<p class="success" id="order-complete" data-testid="order-complete">Order complete</p>') + '</div>';
-  },
-  act:{ step:s => { s.step++; s.runs++; } },
-  docs:s => ({
-    cond:'While the current page does not display text ' + R('Order complete'),
-    inside:['Click on ' + Q('Next checkout step button')],
-    after:['Verify that the current page displays text ' + R('Order complete')],
-    tip:'The confirmation has <code>id="order-complete"</code> and is not on the page until checkout ends.'
-  })
-},
-{
-  key:'while-696', id:696, name:'verifyTextContainsWhile', title:'Element text contains',
-  template:'While the #{label} text contains #{test-data}', example:'Approval status',
-  about:'Refresh the status until the badge no longer says Pending.',
-  countLabel:'Refreshes before approval',
-  init:s => { s.checks = 0; },
-  isTrue:s => s.never || s.checks < s.count,
-  render:s => '<div class="stack"><p>Status: <span class="badge ' + (SC_isTrue('while-696', s) ? 'pending' : 'done') + '" id="status-badge" data-testid="status-badge">' +
-    (SC_isTrue('while-696', s) ? 'Pending (checked ' + s.checks + ' times)' : 'Approved') + '</span></p>' +
-    '<div class="row"><button class="t-btn" id="refresh-status-button" data-testid="refresh-status-button" data-do="refresh">Refresh status</button></div></div>',
-  act:{ refresh:s => { s.checks++; s.runs++; } },
-  docs:s => ({
-    cond:'While the ' + Q('Status badge') + ' text contains ' + Q('Pending'),
-    inside:['Click on ' + Q('Refresh status button')],
-    after:['Verify that the ' + Q('Status badge') + ' text contains ' + Q('Approved')],
-    tip:'Locators: <code>#status-badge</code> and <code>#refresh-status-button</code>.'
-  })
-},
-{
-  key:'while-570', id:570, name:'verifyTextBoxValueEqualsWhile', title:'Input has value',
-  template:'While inputbox #{label} does contain #{test-data} value', example:'Background job',
-  about:'The job field says running. Check the job until the field says done.',
-  countLabel:'Checks before done',
-  init:s => { s.checks = 0; },
-  isTrue:s => s.never || s.checks < s.count,
-  render:s => '<div class="stack"><div class="field"><label for="job-status-field">Job status</label>' +
-    '<input id="job-status-field" data-testid="job-status-field" name="job-status" readonly value="' + (SC_isTrue('while-570', s) ? 'running' : 'done') + '"></div>' +
-    '<div class="row"><button class="t-btn" id="check-job-button" data-testid="check-job-button" data-do="check">Check job</button></div></div>',
-  act:{ check:s => { s.checks++; s.runs++; } },
-  docs:s => ({
-    cond:'While inputbox ' + Q('Job status field') + ' does contain ' + Q('running') + ' value',
-    inside:['Click on ' + Q('Check job button')],
-    after:['Verify that the ' + Q('Job status field') + ' inputbox has value ' + Q('done')],
-    tip:'Locators: <code>#job-status-field</code> and <code>#check-job-button</code>.'
-  })
-},
-{
-  key:'while-569', id:569, name:'verifyTextBoxValueNotEqualsWhile', title:'Input does not have value',
-  template:"While inputbox #{label} doesn't contain #{test-data} value", example:'Quantity',
-  about:'Increase the quantity until the field reaches the target number.',
-  countLabel:'Target quantity',
-  init:s => { s.qty = 0; },
-  isTrue:s => !String(s.qty).includes(String(s.count)),
-  render:s => '<div class="stack"><div class="field"><label for="quantity-field">Quantity</label>' +
-    '<input id="quantity-field" data-testid="quantity-field" name="quantity" readonly value="' + s.qty + '"></div>' +
-    '<p class="notice">Target: ' + s.count + '</p>' +
-    '<div class="row"><button class="t-btn" id="increase-quantity-button" data-testid="increase-quantity-button" data-do="inc" aria-label="Increase quantity">Increase quantity (+1)</button></div></div>',
-  act:{ inc:s => { s.runs++; s.qty = s.never ? (s.qty + 1) % Math.max(s.count, 1) : s.qty + 1; } },
-  docs:s => ({
-    cond:'While inputbox ' + Q('Quantity field') + " doesn't contain " + Q(String(s.count)) + ' value',
-    inside:['Click on ' + Q('Increase quantity button')],
-    after:['Verify that the ' + Q('Quantity field') + ' inputbox has value ' + Q(String(s.count))],
-    tip:'The value in the condition is the target quantity you set above. Locators: <code>#quantity-field</code> and <code>#increase-quantity-button</code>.'
-  })
-},
-{
-  key:'while-697', id:697, name:'verifyEqualsValuesWhile', title:'Two values are equal',
-  template:'While #{source_value} equals #{target_value}', example:'Order status variable',
-  about:'Save the order status in a variable, then refresh until it is no longer pending.',
-  countLabel:'Refreshes before shipped',
-  init:s => { s.refreshes = 0; },
-  isTrue:s => s.never || s.refreshes < s.count,
-  render:s => '<div class="stack"><p>Order status: <span class="badge ' + (SC_isTrue('while-697', s) ? 'pending' : 'done') + '" id="order-status" data-testid="order-status">' +
-    (SC_isTrue('while-697', s) ? 'pending' : 'shipped') + '</span></p>' +
-    '<div class="row"><button class="t-btn" id="refresh-order-button" data-testid="refresh-order-button" data-do="refresh">Refresh order</button></div></div>',
-  act:{ refresh:s => { s.refreshes++; s.runs++; } },
-  docs:s => ({
-    before:['Store text from ' + Q('Order status') + ' in a variable ' + Q('status')],
-    cond:'While ' + Q('${status}') + ' equals ' + Q('pending'),
-    inside:['Click on ' + Q('Refresh order button'), 'Store text from ' + Q('Order status') + ' in a variable ' + Q('status')],
-    after:['Verify that the ' + Q('Order status') + ' text contains ' + Q('shipped')],
-    tip:'Saving the status again inside the loop is what lets the loop end. Use the variable format your ContextQA store step creates.'
-  })
-}
+/* ---------- Templates and their 3 scenarios each ---------- */
+const TEMPLATES = [
+{ id:191, name:'verifyElementVisibleWhile', title:'Element is visible', template:'While element #{label} is visible on the page', variants:[
+  { ex:'Delete buttons', ui:'Button list', about:'Click the first Delete button until no Delete buttons are left.', countLabel:'Delete buttons to start with',
+    init:s => { s.next = s.count + 1; s.items = Array.from({length:s.count}, (_, i) => i + 1); },
+    isTrue:s => s.items.length > 0,
+    render:(s, t) => STACK(
+      ROW(B('add-delete-button', 'Add delete button', 'add', {cls:'secondary'}), t ? NOTE(s.items.length + ' delete button' + (s.items.length === 1 ? '' : 's') + ' left') : ''),
+      t ? '<ul class="list">' + s.items.map((n, i) => '<li><span>Item ' + n + '</span>' + B('delete-button', 'Delete', 'del', {cls:'danger', multi:true, i}) + '</li>').join('') + '</ul>'
+        : OK('all-deleted', 'All delete buttons are gone')),
+    act:{ add:s => s.items.push(s.next++), del:(s, el) => { s.items.splice(+el.dataset.i, 1); s.runs++; if(s.never) s.items.push(s.next++); } },
+    docs:() => ({ cond:'While element ' + Q('Delete button') + ' is visible on the page', inside:['Click on ' + Q('Delete button')],
+      after:['Verify that the current page displays text ' + Q('All delete buttons are gone')],
+      tip:'Every Delete button has the same test id. To always click the first one, use ' + xp('delete-button') + '.' }) },
+  { ex:'Table rows', ui:'Table', about:'Remove the first row of the table until the table is empty.', countLabel:'Rows in the table',
+    init:s => { s.next = s.count + 1; s.items = Array.from({length:s.count}, (_, i) => i + 1); },
+    isTrue:s => s.items.length > 0,
+    render:(s, t) => t
+      ? '<div class="tbl-wrap"><table id="users-table"><thead><tr><th>Name</th><th>Email</th><th>Action</th></tr></thead><tbody>' +
+        s.items.map((n, i) => '<tr><td>User ' + n + '</td><td>user' + n + '@example.com</td><td>' + B('remove-row-button', 'Remove row', 'del', {cls:'danger', multi:true, i}) + '</td></tr>').join('') + '</tbody></table></div>'
+      : OK('table-empty', 'The table is empty'),
+    act:{ del:(s, el) => { s.items.splice(+el.dataset.i, 1); s.runs++; if(s.never) s.items.push(s.next++); } },
+    docs:() => ({ cond:'While element ' + Q('Remove row button') + ' is visible on the page', inside:['Click on ' + Q('Remove row button')],
+      after:['Verify that the current page displays text ' + Q('The table is empty')],
+      tip:'To click the button in the first row, use ' + xp('remove-row-button') + '.' }) },
+  { ex:'Popup dialogs', ui:'Popup', about:'A popup keeps opening again. Close it until it stops coming back.', countLabel:'Times the popup opens',
+    render:(s, t) => STACK(NOTE('Page content sits behind the popup.'), t
+      ? '<div class="dialog-backdrop"><div class="dialog" role="dialog" aria-labelledby="popup-title" id="popup-dialog" data-testid="popup-dialog"><h3 id="popup-title">Special offer ' + (s.n + 1) + '</h3><p>Sign up today and save on your next order.</p>' + B('close-popup-button', 'Close popup', 'go', {cls:'secondary'}) + '</div></div>'
+      : OK('popups-done', 'No more popups')),
+    docs:() => ({ cond:'While element ' + Q('Popup dialog') + ' is visible on the page', inside:['Click on ' + Q('Close popup button')],
+      after:['Verify that the current page displays text ' + Q('No more popups')], tip:'Locators: <code>#popup-dialog</code> and <code>#close-popup-button</code>.' }) }
+]},
+{ id:190, name:'verifyElementEnabledWhile', title:'Element is enabled', template:'While element #{label} is enabled', variants:[
+  { ex:'Pagination', ui:'Button', about:'Click Next page until you reach the last page and the button turns disabled.', countLabel:'Pages after page 1',
+    render:(s, t) => { let p = ''; for(let i = 1; i <= 3; i++) p += '<div class="product">Product ' + (s.n * 3 + i) + '</div>';
+      return STACK('<p class="indicator" id="page-indicator" data-testid="page-indicator">Page ' + (s.n + 1) + ' of ' + (s.never ? 'many' : s.count + 1) + (t ? '' : ' (Last page)') + '</p>',
+        '<div class="products">' + p + '</div>', ROW(B('next-page-button', 'Next page', 'go', {disabled:!t}))); },
+    docs:() => ({ cond:'While element ' + Q('Next page button') + ' is enabled', inside:['Click on ' + Q('Next page button')],
+      after:['Verify that the ' + Q('Page indicator') + ' text contains ' + Q('Last page')], tip:'Locators: <code>#next-page-button</code> and <code>#page-indicator</code>.' }) },
+  { ex:'Add to cart', ui:'Stock counter', about:'Add the product to the cart until it is out of stock and the button turns disabled.', countLabel:'Items in stock',
+    render:(s, t) => STACK('<h3>Desk lamp</h3>', '<p class="indicator" id="stock-label" data-testid="stock-label">' + (t ? 'In stock: ' + left(s) : 'Out of stock') + '</p>',
+      NOTE('In your cart: <strong id="cart-count">' + s.n + '</strong>'), ROW(B('add-to-cart-button', 'Add to cart', 'go', {disabled:!t}))),
+    docs:() => ({ cond:'While element ' + Q('Add to cart button') + ' is enabled', inside:['Click on ' + Q('Add to cart button')],
+      after:['Verify that the current page displays text ' + Q('Out of stock')], tip:'Locator: <code>#add-to-cart-button</code>.' }) },
+  { ex:'Tag input', ui:'Input + button', about:'Type a tag and add it, until the tag limit is reached and the Add tag button turns disabled.', countLabel:'Tag limit',
+    init:s => { s.tags = []; s.tag = ''; },
+    render:(s, t) => STACK(ROW(IN('tag-field', 'Tag', s.tag, {bind:'tag', ph:'e.g. qa-tag'}), B('add-tag-button', 'Add tag', 'add', {disabled:!t})),
+      s.tags.length ? '<div class="chips" id="tag-list">' + s.tags.map(x => '<span>' + esc(x) + '</span>').join('') + '</div>' : NOTE('No tags yet.'),
+      t ? NOTE(s.n + ' of ' + (s.never ? 'many' : s.count) + ' tags used') : OK('tag-limit', 'Tag limit reached')),
+    act:{ add:s => { s.tags.push((s.tag || '').trim() || 'tag-' + (s.n + 1)); s.tag = ''; s.n++; s.runs++; } },
+    docs:() => ({ cond:'While element ' + Q('Add tag button') + ' is enabled', inside:['Enter ' + Q('qa-tag') + ' in the ' + Q('Tag field') + ' field', 'Click on ' + Q('Add tag button')],
+      after:['Verify that the current page displays text ' + Q('Tag limit reached')], tip:'Locators: <code>#tag-field</code> and <code>#add-tag-button</code>.' }) }
+]},
+{ id:582, name:'verifyElementDisabledWhile', title:'Element is disabled', template:'While element #{label} is disabled', variants:[
+  { ex:'Task checklist', ui:'Button', about:'Submit stays disabled until every task is done. Click Complete next task until it turns on.', countLabel:'Number of tasks',
+    init:s => { s.submitted = false; },
+    render:(s, t) => { let li = ''; for(let i = 1; i <= s.count; i++) li += '<li><label><input type="checkbox" disabled' + (i <= s.n && !s.never ? ' checked' : '') + '> Task ' + i + '</label></li>';
+      return STACK(s.count ? '<ul class="checks">' + li + '</ul>' : NOTE('No tasks. Submit is ready.'), s.never && s.n ? ERR('task-error', 'Task failed. Try again.') : '',
+        ROW(B('complete-next-task-button', 'Complete next task', 'go', {cls:'secondary'}), B('submit-button', 'Submit', 'submit', {disabled:t})),
+        s.submitted ? OK('form-submitted', 'Form submitted') : ''); },
+    act:{ submit:s => { s.submitted = true; } },
+    docs:() => ({ cond:'While element ' + Q('Submit button') + ' is disabled', inside:['Click on ' + Q('Complete next task button')],
+      after:['Click on ' + Q('Submit button'), 'Verify that the current page displays text ' + Q('Form submitted')], tip:'Locators: <code>#complete-next-task-button</code> and <code>#submit-button</code>.' }) },
+  { ex:'Consent checkboxes', ui:'Checkboxes', about:'Tick the consent boxes one by one. Continue is disabled until all of them are ticked.', countLabel:'Checkboxes to tick',
+    init:s => { s.box = Array(s.count).fill(false); s.saved = false; },
+    isTrue:s => s.box.includes(false),
+    render:(s, t) => STACK(s.count ? '<ul class="checks">' + s.box.map((c, i) => '<li><label><input type="checkbox" class="consent-checkbox" data-testid="consent-checkbox" data-do="tick" data-i="' + i + '"' + (c ? ' checked' : '') + '> I agree to term ' + (i + 1) + '</label></li>').join('') + '</ul>' : NOTE('Nothing to agree to.'),
+      ROW(B('continue-button', 'Continue', 'save', {disabled:t})), s.saved ? OK('consent-saved', 'Consent saved') : ''),
+    act:{ tick:(s, el) => { const i = +el.dataset.i; s.box[i] = !s.box[i]; s.runs++; if(s.never && !s.box.includes(false)) s.box[i === 0 ? s.box.length - 1 : 0] = false; },
+          save:s => { s.saved = true; } },
+    docs:() => ({ cond:'While element ' + Q('Continue button') + ' is disabled', inside:['Check the checkbox ' + Q('first unticked consent checkbox')],
+      after:['Click on ' + Q('Continue button'), 'Verify that the current page displays text ' + Q('Consent saved')],
+      tip:'To always pick the first unticked box, use <code>(//input[@data-testid=\'consent-checkbox\' and not(@checked)])[1]</code>.' }) },
+  { ex:'Resend code timer', ui:'Timer', timed:true, about:'The Resend code button stays disabled while a countdown runs. Wait until it turns on.', countLabel:'Countdown seconds',
+    init:s => { s.sent = false; },
+    render:(s, t) => STACK(NOTE('We sent a code to your phone.'), '<p class="indicator" id="resend-timer">' + (t ? 'You can resend the code in ' + left(s) + ' seconds' : 'You can resend the code now') + '</p>',
+      ROW(B('resend-code-button', 'Resend code', 'send', {disabled:t})), s.sent ? OK('code-sent', 'A new code was sent') : ''),
+    act:{ send:s => { s.sent = true; } },
+    docs:() => ({ cond:'While element ' + Q('Resend code button') + ' is disabled', inside:[WAIT],
+      after:['Click on ' + Q('Resend code button'), 'Verify that the current page displays text ' + Q('A new code was sent')], tip:'The countdown starts when the page opens. Locator: <code>#resend-code-button</code>.' }) }
+]},
+{ id:553, name:'verifyElementNotVisibleWhile', title:'Element is not visible', template:'While element #{label} is not visible on the page', variants:[
+  { ex:'Retry connection', ui:'Button', about:'Click Retry connection until the success message appears.', countLabel:'Retries before success',
+    render:(s, t) => STACK(NOTE((t ? 'Not connected. ' : '') + 'Attempts so far: ' + s.n), ROW(B('retry-connection-button', 'Retry connection', 'go')),
+      t ? '' : OK('success-message', 'Connected successfully')),
+    docs:() => ({ cond:'While element ' + Q('Success message') + ' is not visible on the page', inside:['Click on ' + Q('Retry connection button')],
+      after:['Verify that the ' + Q('Success message') + ' is present (available/displayed/etc.)'], tip:'The message has <code>id="success-message"</code> and only exists once it shows.' }) },
+  { ex:'Image carousel', ui:'Carousel', about:'Go to the next slide until the final-slide banner shows.', countLabel:'Slides after the first',
+    render:(s, t) => { const hues = ['#2952D9', '#23845A', '#B5482E', '#7A4FC4', '#0E7C8C'];
+      return STACK('<div class="slide" id="carousel-slide" style="background:' + hues[s.n % hues.length] + '">Slide ' + (s.n + 1) + ' of ' + (s.never ? 'many' : s.count + 1) + '</div>',
+        ROW(B('next-slide-button', 'Next slide', 'go', {disabled:!t, aria:'Next slide'})), t ? '' : OK('final-slide-banner', 'You reached the final slide')); },
+    docs:() => ({ cond:'While element ' + Q('Final slide banner') + ' is not visible on the page', inside:['Click on ' + Q('Next slide button')],
+      after:['Verify that the ' + Q('Final slide banner') + ' is present (available/displayed/etc.)'], tip:'Locators: <code>#next-slide-button</code> and <code>#final-slide-banner</code>.' }) },
+  { ex:'Download progress', ui:'Progress bar', about:'Continue the download until the download link appears.', countLabel:'Clicks to finish',
+    render:(s, t) => { const pct = !t ? 100 : s.never ? Math.min(95, s.n * 10) : Math.floor(s.n / s.count * 100);
+      return STACK('<div class="progress" id="download-progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + pct + '"><span style="width:' + pct + '%"></span></div>',
+        NOTE(pct + '% downloaded'), t ? ROW(B('continue-download-button', 'Continue download', 'go'))
+        : '<a class="download" id="download-link" data-testid="download-link" href="#" onclick="return false">Download report.pdf</a>'); },
+    docs:() => ({ cond:'While element ' + Q('Download link') + ' is not visible on the page', inside:['Click on ' + Q('Continue download button')],
+      after:['Verify that the ' + Q('Download link') + ' is present (available/displayed/etc.)'], tip:'Locators: <code>#continue-download-button</code> and <code>#download-link</code>.' }) }
+]},
+{ id:554, name:'verifyTextVisibleWhile', title:'Text is visible', template:'While text #{label} is visible on the page', variants:[
+  { ex:'Work queue', ui:'Button', about:'A ' + R('Processing') + ' status shows while items are in the queue. Handle items until it changes.', countLabel:'Items in the queue',
+    render:(s, t) => STACK(t ? '<p class="status-chip" id="queue-status">Processing</p>' + NOTE(left(s) + ' items left in the queue') : OK('queue-status', 'All items processed'),
+      ROW(B('process-next-item-button', 'Process next item', 'go'))),
+    docs:() => ({ cond:'While text ' + R('Processing') + ' is visible on the page', inside:['Click on ' + Q('Process next item button')],
+      after:['Verify that the current page displays text ' + Q('All items processed')], tip:'For this template the text goes in the element field.' }) },
+  { ex:'Fetch data', ui:'Timer', timed:true, about:'A ' + R('Loading') + ' message shows for a few seconds. Wait until it goes away.', countLabel:'Seconds to wait',
+    render:(s, t) => t ? STACK('<p class="status-chip" id="fetch-status">Loading</p>', '<div class="skeleton"></div><div class="skeleton" style="max-width:240px"></div><div class="skeleton" style="max-width:280px"></div>')
+      : STACK(OK('fetch-status', 'Data is ready'), '<div class="tbl-wrap"><table><thead><tr><th>Region</th><th>Sales</th></tr></thead><tbody><tr><td>North</td><td>1,240</td></tr><tr><td>South</td><td>980</td></tr></tbody></table></div>'),
+    docs:() => ({ cond:'While text ' + R('Loading') + ' is visible on the page', inside:[WAIT],
+      after:['Verify that the current page displays text ' + Q('Data is ready')], tip:'The timer starts when the page opens.' }) },
+  { ex:'Verification code', ui:'Input + button', about:'An error shows after each wrong code. Enter a code and verify until the error goes away.', countLabel:'Wrong tries before success',
+    init:s => { s.code = ''; },
+    render:(s, t) => STACK(ROW(IN('code-field', 'Code', s.code, {bind:'code', ph:'4 digits'}), B('verify-code-button', 'Verify code', 'go')),
+      t ? ERR('code-error', 'Invalid code') : OK('code-ok', 'Code accepted')),
+    act:{ go:s => { s.n++; s.runs++; s.code = ''; } },
+    docs:() => ({ cond:'While text ' + R('Invalid code') + ' is visible on the page', inside:['Enter ' + Q('1234') + ' in the ' + Q('Code field') + ' field', 'Click on ' + Q('Verify code button')],
+      after:['Verify that the current page displays text ' + Q('Code accepted')], tip:'The error is already showing when the page opens. Locators: <code>#code-field</code> and <code>#verify-code-button</code>.' }) }
+]},
+{ id:694, name:'verifyTextPresentWhile', title:'Page shows text', template:'While the current page displays text #{test-data}', variants:[
+  { ex:'Product list', ui:'Button', about:'Keep loading products until the button with the ' + R('Load more') + ' text is gone.', countLabel:'Times to load more',
+    render:(s, t) => { let p = ''; for(let i = 1; i <= 3 + s.n * 3; i++) p += '<div class="product">Product ' + i + '</div>';
+      return STACK('<div class="products" id="product-list">' + p + '</div>', t ? ROW(B('load-more-button', 'Load more', 'go')) : OK('end-of-list', 'You have seen all products')); },
+    docs:() => ({ cond:'While the current page displays text ' + R('Load more'), inside:['Click on the ' + R('Load more') + ' button'],
+      after:['Verify that the current page displays text ' + Q('You have seen all products')], tip:'Locator: <code>#load-more-button</code>.' }) },
+  { ex:'Inbox', ui:'List', about:'Unread messages carry a ' + R('New message') + ' badge. Open them one by one until none are left.', countLabel:'Unread messages',
+    render:(s, t) => { const rows = Math.max(s.count, s.never ? 1 : 0);
+      const list = Array.from({length:rows}, (_, i) => { const unread = s.never ? (i >= s.n || i === rows - 1) : i >= s.n;
+        return '<li><span>Message from Team ' + (i + 1) + '</span><span class="badge ' + (unread ? 'pending">New message' : 'done">Read') + '</span></li>'; }).join('');
+      return STACK(rows ? '<ul class="list" id="inbox-list">' + list + '</ul>' : '', t ? ROW(B('open-next-message-button', 'Open next message', 'go')) : OK('inbox-clear', 'Nothing left to read')); },
+    docs:() => ({ cond:'While the current page displays text ' + R('New message'), inside:['Click on ' + Q('Open next message button')],
+      after:['Verify that the current page displays text ' + Q('Nothing left to read')], tip:'Locator: <code>#open-next-message-button</code>.' }) },
+  { ex:'Coupon', ui:'Input + button', about:'Each coupon fails with an error until a working one is found. Try coupons until the error goes away.', countLabel:'Bad coupons before a good one',
+    render:(s, t) => STACK(ROW(IN('coupon-field', 'Coupon code', 'SAVE' + (s.n + 1), {ro:true}), B('try-another-coupon-button', 'Try another coupon', 'go', {disabled:!t})),
+      t ? ERR('coupon-error', 'Coupon not valid') : OK('coupon-ok', 'Coupon applied: 10% off')),
+    docs:() => ({ cond:'While the current page displays text ' + R('Coupon not valid'), inside:['Click on ' + Q('Try another coupon button')],
+      after:['Verify that the current page displays text ' + Q('Coupon applied')], tip:'Each click fills the next coupon into <code>#coupon-field</code> and tries it.' }) }
+]},
+{ id:695, name:'verifyTextAbsentWhile', title:'Page does not show text', template:'While the current page does not display text #{test-data}', variants:[
+  { ex:'Checkout', ui:'Step bar', about:'Go through the checkout steps until the ' + R('Order complete') + ' text appears.', countLabel:'Checkout steps',
+    render:(s, t) => { const names = ['Cart', 'Shipping', 'Payment', 'Review'], total = s.never ? 4 : s.count, cur = s.never ? s.n % 4 : s.n;
+      let bar = ''; for(let i = 0; i < total; i++) bar += '<span class="' + (t && i === cur ? 'on' : '') + '">' + names[i % 4] + (i >= 4 ? ' ' + (i + 1) : '') + '</span>';
+      return STACK(total ? '<div class="steps-bar">' + bar + '</div>' : '', t ? NOTE('Checkout step ' + (cur + 1) + ' of ' + total) + ROW(B('next-checkout-step-button', 'Next checkout step', 'go'))
+        : OK('order-complete', 'Order complete')); },
+    docs:() => ({ cond:'While the current page does not display text ' + R('Order complete'), inside:['Click on ' + Q('Next checkout step button')],
+      after:['Verify that the current page displays text ' + R('Order complete')], tip:'Locator: <code>#next-checkout-step-button</code>.' }) },
+  { ex:'Quiz', ui:'Radio buttons', about:'Pick an answer and go to the next question until the quiz shows its ' + R('Quiz finished') + ' text.', countLabel:'Questions',
+    init:s => { s.choice = ''; s.flash = ''; },
+    render:(s, t) => t ? STACK('<fieldset id="quiz-question"><legend>Question ' + (s.n + 1) + ' of ' + (s.never ? 'many' : s.count) + '</legend>' +
+        ['A', 'B', 'C'].map(x => '<label class="radio"><input type="radio" name="answer" id="answer-' + x.toLowerCase() + '" value="' + x + '" data-bind="choice"' + (s.choice === x ? ' checked' : '') + '> Answer ' + x + '</label>').join('') + '</fieldset>',
+        s.flash ? ERR('quiz-error', s.flash) : '', ROW(B('next-question-button', 'Next question', 'next')))
+      : OK('quiz-finished', 'Quiz finished. You answered ' + s.n + ' questions.'),
+    act:{ next:s => { if(!s.choice){ s.flash = 'Choose an answer first.'; return; } s.flash = ''; s.choice = ''; s.n++; s.runs++; } },
+    docs:() => ({ cond:'While the current page does not display text ' + R('Quiz finished'), inside:['Check the radio button ' + Q('Answer A'), 'Click on ' + Q('Next question button')],
+      after:['Verify that the current page displays text ' + R('Quiz finished')], tip:'Radio locators: <code>#answer-a</code>, <code>#answer-b</code>, <code>#answer-c</code>. Next question does nothing until an answer is picked.' }) },
+  { ex:'File upload', ui:'File list', about:'Upload files one at a time until the page says every file is done.', countLabel:'Files to upload',
+    render:(s, t) => { const rows = s.never ? s.n + 2 : s.count;
+      const list = Array.from({length:rows}, (_, i) => '<li><span>report-' + (i + 1) + '.pdf</span><span class="badge ' + (i < s.n ? 'done">Uploaded' : 'pending">Waiting') + '</span></li>').join('');
+      return STACK(rows ? '<ul class="list" id="file-list">' + list + '</ul>' : '', t ? ROW(B('upload-next-file-button', 'Upload next file', 'go')) : OK('upload-finished', 'All files uploaded')); },
+    docs:() => ({ cond:'While the current page does not display text ' + R('All files uploaded'), inside:['Click on ' + Q('Upload next file button')],
+      after:['Verify that the current page displays text ' + R('All files uploaded')], tip:'Locator: <code>#upload-next-file-button</code>.' }) }
+]},
+{ id:696, name:'verifyTextContainsWhile', title:'Element text contains', template:'While the #{label} text contains #{test-data}', variants:[
+  { ex:'Approval status', ui:'Badge', about:'Refresh the status until the badge no longer says Pending.', countLabel:'Refreshes before approval',
+    render:(s, t) => STACK('<p>Status: <span class="badge ' + (t ? 'pending' : 'done') + '" id="status-badge" data-testid="status-badge">' + (t ? 'Pending (checked ' + s.n + ' times)' : 'Approved') + '</span></p>',
+      ROW(B('refresh-status-button', 'Refresh status', 'go'))),
+    docs:() => ({ cond:'While the ' + Q('Status badge') + ' text contains ' + Q('Pending'), inside:['Click on ' + Q('Refresh status button')],
+      after:['Verify that the ' + Q('Status badge') + ' text contains ' + Q('Approved')], tip:'Locators: <code>#status-badge</code> and <code>#refresh-status-button</code>.' }) },
+  { ex:'Countdown timer', ui:'Timer', timed:true, about:'The timer label shows the time left. Wait until it says the time is up.', countLabel:'Seconds on the timer',
+    render:(s, t) => STACK('<p class="timer" id="timer-label" data-testid="timer-label">' + (t ? 'Time left: ' + left(s) + ' s' : 'Time is up') + '</p>', NOTE('The timer starts when the page opens.')),
+    docs:() => ({ cond:'While the ' + Q('Timer label') + ' text contains ' + Q('Time left'), inside:[WAIT],
+      after:['Verify that the ' + Q('Timer label') + ' text contains ' + Q('Time is up')], tip:'Locator: <code>#timer-label</code>.' }) },
+  { ex:'Build table', ui:'Table', about:'A table cell shows the build status. Refresh the table until the build stops running.', countLabel:'Refreshes before it finishes',
+    render:(s, t) => STACK('<div class="tbl-wrap"><table id="build-table"><thead><tr><th>Build</th><th>Branch</th><th>Status</th></tr></thead><tbody>' +
+        '<tr><td>#104</td><td>main</td><td id="build-status-cell" data-testid="build-status-cell">' + (t ? 'Running' : 'Passed') + '</td></tr>' +
+        '<tr><td>#103</td><td>main</td><td>Passed</td></tr><tr><td>#102</td><td>release</td><td>Passed</td></tr></tbody></table></div>',
+      ROW(B('refresh-table-button', 'Refresh table', 'go')), NOTE('Refreshed ' + s.n + ' times')),
+    docs:() => ({ cond:'While the ' + Q('Build status cell') + ' text contains ' + Q('Running'), inside:['Click on ' + Q('Refresh table button')],
+      after:['Verify that the ' + Q('Build status cell') + ' text contains ' + Q('Passed')], tip:'Locators: <code>#build-status-cell</code> and <code>#refresh-table-button</code>.' }) }
+]},
+{ id:570, name:'verifyTextBoxValueEqualsWhile', title:'Input has value', template:'While inputbox #{label} does contain #{test-data} value', variants:[
+  { ex:'Background job', ui:'Input + button', about:'The job field says running. Check the job until the field says done.', countLabel:'Checks before done',
+    render:(s, t) => STACK(IN('job-status-field', 'Job status', t ? 'running' : 'done', {ro:true}), ROW(B('check-job-button', 'Check job', 'go'))),
+    docs:() => ({ cond:'While inputbox ' + Q('Job status field') + ' does contain ' + Q('running') + ' value', inside:['Click on ' + Q('Check job button')],
+      after:['Verify that the ' + Q('Job status field') + ' inputbox has value ' + Q('done')], tip:'Locators: <code>#job-status-field</code> and <code>#check-job-button</code>.' }) },
+  { ex:'File sync', ui:'Timer', timed:true, about:'The sync field shows syncing while files sync. Wait until it shows synced.', countLabel:'Seconds to sync',
+    render:(s, t) => STACK(IN('sync-status-field', 'Sync status', t ? 'syncing' : 'synced', {ro:true}), NOTE('Syncing starts when the page opens.')),
+    docs:() => ({ cond:'While inputbox ' + Q('Sync status field') + ' does contain ' + Q('syncing') + ' value', inside:[WAIT],
+      after:['Verify that the ' + Q('Sync status field') + ' inputbox has value ' + Q('synced')], tip:'Locator: <code>#sync-status-field</code>.' }) },
+  { ex:'Discount code', ui:'Input + button', about:'The code field holds an expired code. Generate new codes until a valid one appears.', countLabel:'Expired codes before a valid one',
+    render:(s, t) => STACK(IN('discount-code-field', 'Discount code', t ? 'EXPIRED-' + String(s.n + 1).padStart(2, '0') : 'VALID-2026', {ro:true}), ROW(B('generate-code-button', 'Generate new code', 'go'))),
+    docs:() => ({ cond:'While inputbox ' + Q('Discount code field') + ' does contain ' + Q('EXPIRED') + ' value', inside:['Click on ' + Q('Generate new code button')],
+      after:['Verify that the ' + Q('Discount code field') + ' inputbox has value ' + Q('VALID-2026')], tip:'Locators: <code>#discount-code-field</code> and <code>#generate-code-button</code>.' }) }
+]},
+{ id:569, name:'verifyTextBoxValueNotEqualsWhile', title:'Input does not have value', template:"While inputbox #{label} doesn't contain #{test-data} value", variants:[
+  { ex:'Quantity', ui:'Input + button', about:'Increase the quantity until the field reaches the target number.', countLabel:'Target quantity', defaultCount:5,
+    isTrue:s => !String(s.n).includes(String(s.count)),
+    render:(s, t) => STACK(IN('quantity-field', 'Quantity', s.n, {ro:true}), NOTE('Target: ' + s.count), ROW(B('increase-quantity-button', 'Increase quantity (+1)', 'inc', {aria:'Increase quantity'}))),
+    act:{ inc:s => { s.runs++; s.n = s.never ? (s.n + 1) % Math.max(s.count, 1) : s.n + 1; } },
+    docs:s => ({ cond:'While inputbox ' + Q('Quantity field') + " doesn't contain " + Q(String(s.count)) + ' value', inside:['Click on ' + Q('Increase quantity button')],
+      after:['Verify that the ' + Q('Quantity field') + ' inputbox has value ' + Q(String(s.count))], tip:'The value in the condition is the target you set above.' }) },
+  { ex:'Seat booking', ui:'Input + button', about:'Book seats until the seats field says Sold out.', countLabel:'Seats available',
+    render:(s, t) => STACK(IN('seats-field', 'Seats left', t ? left(s) + ' seats left' : 'Sold out', {ro:true}), ROW(B('book-seat-button', 'Book a seat', 'go', {disabled:!t}))),
+    docs:() => ({ cond:'While inputbox ' + Q('Seats field') + " doesn't contain " + Q('Sold out') + ' value', inside:['Click on ' + Q('Book a seat button')],
+      after:['Verify that the ' + Q('Seats field') + ' inputbox has value ' + Q('Sold out')], tip:'Locators: <code>#seats-field</code> and <code>#book-seat-button</code>.' }) },
+  { ex:'Server status', ui:'Timer', timed:true, about:'The status field changes to Ready after a few seconds. Wait until it does.', countLabel:'Seconds until ready',
+    render:(s, t) => STACK(IN('server-status-field', 'Server status', t ? 'Starting' : 'Ready', {ro:true}), NOTE('The server starts when the page opens.')),
+    docs:() => ({ cond:'While inputbox ' + Q('Server status field') + " doesn't contain " + Q('Ready') + ' value', inside:[WAIT],
+      after:['Verify that the ' + Q('Server status field') + ' inputbox has value ' + Q('Ready')], tip:'Locator: <code>#server-status-field</code>.' }) }
+]},
+{ id:697, name:'verifyEqualsValuesWhile', title:'Two values are equal', template:'While #{source_value} equals #{target_value}', variants:[
+  { ex:'Order status', ui:'Text + variable', about:'Save the order status in a variable, then refresh until it is no longer pending.', countLabel:'Refreshes before shipped',
+    render:(s, t) => STACK('<p>Order status: <span class="badge ' + (t ? 'pending' : 'done') + '" id="order-status" data-testid="order-status">' + (t ? 'pending' : 'shipped') + '</span></p>', ROW(B('refresh-order-button', 'Refresh order', 'go'))),
+    docs:() => ({ before:['Store text from ' + Q('Order status') + ' in a variable ' + Q('status')], cond:'While ' + Q('${status}') + ' equals ' + Q('pending'),
+      inside:['Click on ' + Q('Refresh order button'), 'Store text from ' + Q('Order status') + ' in a variable ' + Q('status')],
+      after:['Verify that the ' + Q('Order status') + ' text contains ' + Q('shipped')], tip:'Saving the status again inside the loop is what lets the loop end. Use the variable format your ContextQA store step creates.' }) },
+  { ex:'Connection state', ui:'Timer + variable', timed:true, about:'Save the connection state in a variable and wait until it is no longer offline.', countLabel:'Seconds until online',
+    render:(s, t) => STACK('<p>Connection: <span class="badge ' + (t ? 'pending' : 'done') + '" id="connection-state" data-testid="connection-state">' + (t ? 'offline' : 'online') + '</span></p>', NOTE('The connection starts when the page opens.')),
+    docs:() => ({ before:['Store text from ' + Q('Connection state') + ' in a variable ' + Q('state')], cond:'While ' + Q('${state}') + ' equals ' + Q('offline'),
+      inside:[WAIT, 'Store text from ' + Q('Connection state') + ' in a variable ' + Q('state')],
+      after:['Verify that the ' + Q('Connection state') + ' text contains ' + Q('online')], tip:'Locator: <code>#connection-state</code>.' }) },
+  { ex:'Account balance', ui:'Input + variable', about:'Save the balance from the input field and check the deposit until the balance changes.', countLabel:'Checks before the deposit arrives',
+    render:(s, t) => STACK(IN('balance-field', 'Balance', t ? '0.00' : '50.00', {ro:true}), ROW(B('check-deposit-button', 'Check deposit', 'go'))),
+    docs:() => ({ before:['Store value from ' + Q('Balance field') + ' inputbox in a variable ' + Q('balance')], cond:'While ' + Q('${balance}') + ' equals ' + Q('0.00'),
+      inside:['Click on ' + Q('Check deposit button'), 'Store value from ' + Q('Balance field') + ' inputbox in a variable ' + Q('balance')],
+      after:['Verify that the ' + Q('Balance field') + ' inputbox has value ' + Q('50.00')], tip:'Locators: <code>#balance-field</code> and <code>#check-deposit-button</code>.' }) }
+]}
 ];
 
-const SC_isTrue = (key, s) => SC.find(x => x.key === key).isTrue(s);
+/* Flatten into scenarios with keys like while-191-2 */
+const SC = [];
+TEMPLATES.forEach(tp => tp.variants.forEach((v, i) => {
+  v.key = 'while-' + tp.id + '-' + (i + 1); v.tp = tp; v.num = i + 1;
+  v.isTrue = v.isTrue || on;
+  v.act = Object.assign({ go:s => { s.n++; s.runs++; } }, v.act || {});
+  SC.push(v);
+}));
 
 /* ---------- State ---------- */
 const STATE = {};
 const params = new URLSearchParams(location.search);
-const firstHash = location.hash.slice(1);
+let firstHash = location.hash.slice(1);
 function getState(sc){
   if(!STATE[sc.key]){
-    let count = 3, never = false;
+    let count = sc.defaultCount != null ? sc.defaultCount : 3, never = false;
     if(sc.key === firstHash){
       const c = parseInt(params.get('count'), 10);
       if(!isNaN(c) && c >= 0 && c <= 200) count = c;
       never = params.get('never') === '1';
     }
-    if(sc.key === 'while-569' && !params.get('count')) count = 5;
-    STATE[sc.key] = {count, never, runs:0};
-    sc.init(STATE[sc.key]);
+    STATE[sc.key] = {count, never};
+    resetState(sc);
   }
   return STATE[sc.key];
 }
-function resetState(sc){ const s = getState(sc); s.runs = 0; sc.init(s); }
+function resetState(sc){ const s = STATE[sc.key]; s.n = 0; s.runs = 0; if(sc.init) sc.init(s); }
 
 /* ---------- Render ---------- */
 function pageUrl(sc, s){
-  const base = location.origin === 'null' || location.protocol === 'file:' ? location.href.split(/[?#]/)[0] : location.origin + location.pathname;
+  const base = location.protocol === 'file:' ? location.href.split(/[?#]/)[0] : location.origin + location.pathname;
   return base + '?count=' + s.count + (s.never ? '&never=1' : '') + '#' + sc.key;
 }
-
 function renderNav(current){
-  $('#nav').innerHTML = '<a href="#" ' + (current ? '' : 'aria-current="page"') + '>All scenarios</a><hr>' +
-    SC.map(sc => '<a href="#' + sc.key + '"' + (current === sc ? ' aria-current="page"' : '') + '>' + esc(sc.title) + '<span class="nid mono">ID ' + sc.id + '</span></a>').join('');
+  let h = '<a href="#"' + (current ? '' : ' aria-current="page"') + '>All scenarios</a>';
+  TEMPLATES.forEach(tp => {
+    h += '<div class="ngroup">' + esc(tp.title) + ' <span>(ID ' + tp.id + ')</span></div>';
+    tp.variants.forEach(v => { h += '<a class="sub" href="#' + v.key + '"' + (current === v ? ' aria-current="page"' : '') + '>' + esc(v.ex) + '</a>'; });
+  });
+  $('#nav').innerHTML = h;
 }
-
 function renderOverview(){
   renderNav(null);
   document.title = 'While loop practice page';
   $('#view').innerHTML =
     '<section class="intro"><h2>How to use this page</h2>' +
-    '<p>Each scenario below is a small working page for one While template. Open a scenario, set how many times the loop should run, then use the ContextQA steps shown next to it. Your test clicks the button again and again, and the loop ends when the condition turns false.</p>' +
-    '<p>Every scenario has its own link, so your test can open it directly. Turn on <strong>Never stop</strong> to test your safety limit, or set the count to 0 to test a loop that is skipped.</p></section>' +
-    '<div class="cards">' + SC.map(sc =>
-      '<article class="card"><h3>' + esc(sc.title) + '</h3><p class="tpl mono">' + esc(sc.template) + '</p>' +
-      '<p>' + esc(sc.about) + '</p><a class="btn" href="#' + sc.key + '">Open ' + esc(sc.example.toLowerCase()) + ' example</a></article>').join('') + '</div>';
+    '<p>Every ContextQA While template has 3 scenarios here, each built with a different kind of UI: buttons, inputs, checkboxes, radio buttons, tables, popups and timers. Open a scenario, set how many times the loop should run, then copy the ContextQA steps shown next to it.</p>' +
+    '<p>Each scenario has its own link, so your test can open it directly. Turn on <strong>Never stop</strong> to test your safety limit, or set the count to 0 to test a loop that is skipped.</p></section>' +
+    '<div class="cards">' + TEMPLATES.map(tp => '<article class="card"><h3>' + esc(tp.title) + '</h3><p class="tpl mono">' + esc(tp.template) + ' (ID ' + tp.id + ')</p><ul>' +
+      tp.variants.map(v => '<li><a href="#' + v.key + '"><span>' + esc(v.ex) + '</span><span class="ui-tag">' + esc(v.ui) + '</span></a></li>').join('') + '</ul></article>').join('') + '</div>';
 }
+function pill(t){ return '<span class="state-pill ' + t + '" id="condPill">Condition is ' + (t ? 'true: loop keeps going' : 'false: loop ends') + '</span>'; }
+function meter(sc, s){ return sc.timed ? 'Seconds passed: <strong id="runs">' + s.n + '</strong>' : 'Loop actions so far: <strong id="runs">' + s.runs + '</strong>'; }
 
 function renderScenario(sc){
   renderNav(sc);
-  document.title = sc.title + ' – While loop practice page';
-  const s = getState(sc);
-  const d = sc.docs(s);
-  const isTrue = sc.isTrue(s);
+  document.title = sc.tp.title + ': ' + sc.ex + ' – While loop practice page';
+  const s = getState(sc), d = sc.docs(s), t = sc.isTrue(s);
   const list = arr => '<ol>' + arr.map(x => '<li>' + x + '</li>').join('') + '</ol>';
-  const url = pageUrl(sc, s);
-  const before = ['Navigate to <span class="mono">' + esc(url) + '</span>'].concat(d.before || []);
-
+  const before = ['Navigate to <span class="mono">' + esc(pageUrl(sc, s)) + '</span>'].concat(d.before || []);
   $('#view').innerHTML =
-    '<section class="sc-head"><h2>' + esc(sc.title) + ': ' + esc(sc.example.toLowerCase()) + '</h2>' +
-    '<p class="tpl mono">' + esc(sc.template) + ' (' + esc(sc.name) + ', ID ' + sc.id + ')</p>' +
-    '<p style="margin:8px 0 0">' + esc(sc.about) + '</p>' +
+    '<section class="sc-head"><h2>' + esc(sc.tp.title) + ': ' + esc(sc.ex) + '</h2>' +
+    '<p class="tpl mono">' + esc(sc.tp.template) + ' (' + esc(sc.tp.name) + ', ID ' + sc.tp.id + ')</p>' +
+    '<p style="margin:8px 0 0">' + sc.about + '</p>' +
+    '<div class="siblings" aria-label="Scenarios for this template">' + sc.tp.variants.map(v => '<a href="#' + v.key + '"' + (v === sc ? ' aria-current="page"' : '') + '>' + v.num + '. ' + esc(v.ex) + ' (' + esc(v.ui) + ')</a>').join('') + '</div>' +
     '<div class="setup">' +
       '<label>' + esc(sc.countLabel) + '<input type="number" id="countInput" min="0" max="200" value="' + s.count + '"></label>' +
       '<label class="check"><input type="checkbox" id="neverInput"' + (s.never ? ' checked' : '') + '> Never stop (for the safety limit test)</label>' +
       '<button class="btn" type="button" id="resetBtn">Reset scenario</button>' +
     '</div></section>' +
     '<div class="grid2">' +
-      '<section class="box" aria-label="Test area"><div class="box-head"><h3>Test area</h3>' +
-        '<span class="state-pill ' + isTrue + '" id="condPill">Condition is ' + (isTrue ? 'true: loop keeps going' : 'false: loop ends') + '</span></div>' +
-        '<div class="stage" id="stage" data-scenario="' + sc.key + '">' + sc.render(s) + '</div>' +
-        '<div class="meter"><span>Loop clicks so far: <strong id="runs">' + s.runs + '</strong></span></div>' +
-      '</section>' +
+      '<section class="box" aria-label="Test area"><div class="box-head"><h3>Test area</h3>' + pill(t) + '</div>' +
+        '<div class="stage" id="stage">' + sc.render(s, t) + '</div>' +
+        '<div class="meter"><span id="meter">' + meter(sc, s) + '</span></div></section>' +
       '<section class="box" aria-label="ContextQA steps"><div class="box-head"><h3>Steps for ContextQA</h3></div>' +
         '<div class="cq"><h4>Before the loop</h4>' + list(before) +
         '<h4>Loop condition</h4><div class="cond">' + d.cond + '</div>' +
         '<h4>Steps inside the loop</h4><div class="inside">' + list(d.inside) + '</div>' +
         '<h4>After the loop</h4>' + list(d.after) +
         '<p class="tip">' + d.tip + '</p></div>' +
-        '<div class="copy-row"><button class="btn" type="button" id="copyUrl">Copy scenario link</button></div>' +
-      '</section>' +
+        '<div class="copy-row"><button class="btn" type="button" id="copyUrl">Copy scenario link</button></div></section>' +
     '</div>';
 }
-
 function refreshStage(sc){
-  const s = getState(sc), isTrue = sc.isTrue(s);
-  $('#stage').innerHTML = sc.render(s);
-  $('#runs').textContent = s.runs;
-  const pill = $('#condPill');
-  pill.className = 'state-pill ' + isTrue;
-  pill.textContent = 'Condition is ' + (isTrue ? 'true: loop keeps going' : 'false: loop ends');
+  const s = getState(sc), t = sc.isTrue(s);
+  const active = document.activeElement, activeId = active && active.id;
+  $('#stage').innerHTML = sc.render(s, t);
+  $('#meter').innerHTML = meter(sc, s);
+  $('#condPill').outerHTML = pill(t);
+  if(activeId && $('#stage').querySelector('#' + CSS.escape(activeId))) $('#' + CSS.escape(activeId)).focus();
 }
-
+const current = () => SC.find(x => x.key === location.hash.slice(1));
 function route(){
-  const sc = SC.find(x => x.key === location.hash.slice(1));
+  const h = location.hash.slice(1);
+  if(/^while-\d+$/.test(h) && SC.find(x => x.key === h + '-1')){ location.replace('#' + h + '-1'); return; }
+  const sc = current();
   sc ? renderScenario(sc) : renderOverview();
   window.scrollTo(0, 0);
 }
 
+/* ---------- Timer for timed scenarios ---------- */
+setInterval(() => {
+  const sc = current();
+  if(!sc || !sc.timed) return;
+  const s = getState(sc);
+  if(!sc.isTrue(s)) return;
+  s.n++;
+  refreshStage(sc);
+}, 1000);
+
 /* ---------- Events ---------- */
+if(/^while-\d+$/.test(firstHash)) firstHash += '-1';
 window.addEventListener('hashchange', route);
 
 $('#view').addEventListener('click', async e => {
-  const sc = SC.find(x => x.key === location.hash.slice(1));
-  if(!sc) return;
+  const sc = current(); if(!sc) return;
   const s = getState(sc);
-  const doBtn = e.target.closest('[data-do]');
-  if(doBtn && !doBtn.disabled){
-    const fn = sc.act[doBtn.dataset.do];
-    if(fn){ fn(s, doBtn); refreshStage(sc); }
+  const el = e.target.closest('[data-do]');
+  if(el && !el.disabled && $('#stage').contains(el)){
+    const fn = sc.act[el.dataset.do];
+    if(fn){ fn(s, el); refreshStage(sc); }
     return;
   }
   if(e.target.id === 'resetBtn'){ resetState(sc); renderScenario(sc); toast('Scenario reset'); return; }
@@ -531,20 +572,20 @@ $('#view').addEventListener('click', async e => {
     catch(err){ toast('Copy is blocked here. Select the link in the steps instead.'); }
   }
 });
-
+$('#view').addEventListener('input', e => {
+  const sc = current(); if(!sc) return;
+  if(e.target.dataset.bind) getState(sc)[e.target.dataset.bind] = e.target.value;
+});
 $('#view').addEventListener('change', e => {
-  const sc = SC.find(x => x.key === location.hash.slice(1));
-  if(!sc) return;
+  const sc = current(); if(!sc) return;
   const s = getState(sc);
+  if(e.target.dataset.bind){ s[e.target.dataset.bind] = e.target.value; return; }
   if(e.target.id === 'countInput'){
     const v = parseInt(e.target.value, 10);
     s.count = isNaN(v) ? 0 : Math.min(Math.max(v, 0), 200);
     resetState(sc); renderScenario(sc); $('#countInput').focus();
   }
-  if(e.target.id === 'neverInput'){
-    s.never = e.target.checked;
-    resetState(sc); renderScenario(sc); $('#neverInput').focus();
-  }
+  if(e.target.id === 'neverInput'){ s.never = e.target.checked; resetState(sc); renderScenario(sc); $('#neverInput').focus(); }
 });
 
 function toast(text){

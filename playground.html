@@ -147,7 +147,7 @@ legend{font-weight:600;padding:0 4px}
 .skeleton{height:12px;border-radius:6px;background:var(--line);margin:6px 0;max-width:320px}
 .download{display:inline-block;font-weight:600}
 
-/* ContextQA steps */
+/* Steps panel (unused) */
 .cq{padding:14px 16px}
 .cq h4{font-size:.8rem;color:var(--muted);font-weight:600;margin:12px 0 4px}
 .cq h4:first-child{margin-top:0}
@@ -178,7 +178,7 @@ legend{font-weight:600;padding:0 4px}
 <header class="top">
   <div>
     <h1>While loop practice page</h1>
-    <p>33 live scenarios, 3 for every ContextQA While template. Point your test at a scenario and watch the loop run until the condition turns false.</p>
+    <p>33 live scenarios, 3 for every While template. Point your test at a scenario and watch the loop run until the condition turns false.</p>
   </div>
   <div class="top-actions">
     <a class="btn" href="index.html">Open the test builder</a>
@@ -429,7 +429,7 @@ const TEMPLATES = [
     render:(s, t) => STACK('<p>Order status: <span class="badge ' + (t ? 'pending' : 'done') + '" id="order-status" data-testid="order-status">' + (t ? 'pending' : 'shipped') + '</span></p>', ROW(B('refresh-order-button', 'Refresh order', 'go'))),
     docs:() => ({ before:['Store text from ' + Q('Order status') + ' in a variable ' + Q('status')], cond:'While ' + Q('${status}') + ' equals ' + Q('pending'),
       inside:['Click on ' + Q('Refresh order button'), 'Store text from ' + Q('Order status') + ' in a variable ' + Q('status')],
-      after:['Verify that the ' + Q('Order status') + ' text contains ' + Q('shipped')], tip:'Saving the status again inside the loop is what lets the loop end. Use the variable format your ContextQA store step creates.' }) },
+      after:['Verify that the ' + Q('Order status') + ' text contains ' + Q('shipped')], tip:'Saving the status again inside the loop is what lets the loop end. ' }) },
   { ex:'Connection state', ui:'Timer + variable', timed:true, about:'Save the connection state in a variable and wait until it is no longer offline.', countLabel:'Seconds until online',
     render:(s, t) => STACK('<p>Connection: <span class="badge ' + (t ? 'pending' : 'done') + '" id="connection-state" data-testid="connection-state">' + (t ? 'offline' : 'online') + '</span></p>', NOTE('The connection starts when the page opens.')),
     docs:() => ({ before:['Store text from ' + Q('Connection state') + ' in a variable ' + Q('state')], cond:'While ' + Q('${state}') + ' equals ' + Q('offline'),
@@ -472,10 +472,6 @@ function getState(sc){
 function resetState(sc){ const s = STATE[sc.key]; s.n = 0; s.runs = 0; if(sc.init) sc.init(s); }
 
 /* ---------- Render ---------- */
-function pageUrl(sc, s){
-  const base = location.protocol === 'file:' ? location.href.split(/[?#]/)[0] : location.origin + location.pathname;
-  return base + '?count=' + s.count + (s.never ? '&never=1' : '') + '#' + sc.key;
-}
 function renderNav(current){
   let h = '<a href="#"' + (current ? '' : ' aria-current="page"') + '>All scenarios</a>';
   TEMPLATES.forEach(tp => {
@@ -489,8 +485,8 @@ function renderOverview(){
   document.title = 'While loop practice page';
   $('#view').innerHTML =
     '<section class="intro"><h2>How to use this page</h2>' +
-    '<p>Every ContextQA While template has 3 scenarios here, each built with a different kind of UI: buttons, inputs, checkboxes, radio buttons, tables, popups and timers. Open a scenario, set how many times the loop should run, then copy the ContextQA steps shown next to it.</p>' +
-    '<p>Each scenario has its own link, so your test can open it directly. Turn on <strong>Never stop</strong> to test your safety limit, or set the count to 0 to test a loop that is skipped.</p></section>' +
+    '<p>Every While template has 3 scenarios here, each built with a different kind of UI: buttons, inputs, checkboxes, radio buttons, tables, popups and timers. Open a scenario, set how many times the loop should run, and point your test at it.</p>' +
+    '<p>Turn on <strong>Never stop</strong> to test your safety limit, or set the count to 0 to test a loop that is skipped.</p></section>' +
     '<div class="cards">' + TEMPLATES.map(tp => '<article class="card"><h3>' + esc(tp.title) + '</h3><p class="tpl mono">' + esc(tp.template) + ' (ID ' + tp.id + ')</p><ul>' +
       tp.variants.map(v => '<li><a href="#' + v.key + '"><span>' + esc(v.ex) + '</span><span class="ui-tag">' + esc(v.ui) + '</span></a></li>').join('') + '</ul></article>').join('') + '</div>';
 }
@@ -500,9 +496,7 @@ function meter(sc, s){ return sc.timed ? 'Seconds passed: <strong id="runs">' + 
 function renderScenario(sc){
   renderNav(sc);
   document.title = sc.tp.title + ': ' + sc.ex + ' – While loop practice page';
-  const s = getState(sc), d = sc.docs(s), t = sc.isTrue(s);
-  const list = arr => '<ol>' + arr.map(x => '<li>' + x + '</li>').join('') + '</ol>';
-  const before = ['Navigate to <span class="mono">' + esc(pageUrl(sc, s)) + '</span>'].concat(d.before || []);
+  const s = getState(sc), t = sc.isTrue(s);
   $('#view').innerHTML =
     '<section class="sc-head"><h2>' + esc(sc.tp.title) + ': ' + esc(sc.ex) + '</h2>' +
     '<p class="tpl mono">' + esc(sc.tp.template) + ' (' + esc(sc.tp.name) + ', ID ' + sc.tp.id + ')</p>' +
@@ -513,18 +507,9 @@ function renderScenario(sc){
       '<label class="check"><input type="checkbox" id="neverInput"' + (s.never ? ' checked' : '') + '> Never stop (for the safety limit test)</label>' +
       '<button class="btn" type="button" id="resetBtn">Reset scenario</button>' +
     '</div></section>' +
-    '<div class="grid2">' +
       '<section class="box" aria-label="Test area"><div class="box-head"><h3>Test area</h3>' + pill(t) + '</div>' +
         '<div class="stage" id="stage">' + sc.render(s, t) + '</div>' +
-        '<div class="meter"><span id="meter">' + meter(sc, s) + '</span></div></section>' +
-      '<section class="box" aria-label="ContextQA steps"><div class="box-head"><h3>Steps for ContextQA</h3></div>' +
-        '<div class="cq"><h4>Before the loop</h4>' + list(before) +
-        '<h4>Loop condition</h4><div class="cond">' + d.cond + '</div>' +
-        '<h4>Steps inside the loop</h4><div class="inside">' + list(d.inside) + '</div>' +
-        '<h4>After the loop</h4>' + list(d.after) +
-        '<p class="tip">' + d.tip + '</p></div>' +
-        '<div class="copy-row"><button class="btn" type="button" id="copyUrl">Copy scenario link</button></div></section>' +
-    '</div>';
+        '<div class="meter"><span id="meter">' + meter(sc, s) + '</span></div></section>';
 }
 function refreshStage(sc){
   const s = getState(sc), t = sc.isTrue(s);
@@ -557,7 +542,7 @@ setInterval(() => {
 if(/^while-\d+$/.test(firstHash)) firstHash += '-1';
 window.addEventListener('hashchange', route);
 
-$('#view').addEventListener('click', async e => {
+$('#view').addEventListener('click', e => {
   const sc = current(); if(!sc) return;
   const s = getState(sc);
   const el = e.target.closest('[data-do]');
@@ -567,10 +552,6 @@ $('#view').addEventListener('click', async e => {
     return;
   }
   if(e.target.id === 'resetBtn'){ resetState(sc); renderScenario(sc); toast('Scenario reset'); return; }
-  if(e.target.id === 'copyUrl'){
-    try{ await navigator.clipboard.writeText(pageUrl(sc, s)); toast('Link copied'); }
-    catch(err){ toast('Copy is blocked here. Select the link in the steps instead.'); }
-  }
 });
 $('#view').addEventListener('input', e => {
   const sc = current(); if(!sc) return;

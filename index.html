@@ -175,7 +175,7 @@ input.invalid{border-color:var(--bad);outline-color:var(--bad)}
 <header class="top">
   <div>
     <h1>While loop test builder</h1>
-    <p>Pick a ContextQA condition, add the steps to repeat, and generate the test cases that check the loop works.</p>
+    <p>Pick a condition, add the steps to repeat, and generate the test cases that check the loop works.</p>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap">
     <a class="btn" href="playground.html" style="text-decoration:none;color:inherit">Open the practice page</a>
@@ -187,7 +187,7 @@ input.invalid{border-color:var(--bad);outline-color:var(--bad)}
   <aside class="panel templates" aria-label="Condition templates">
     <div class="panel-head">
       <h2>Conditions</h2>
-      <p>11 While templates from your ContextQA catalog</p>
+      <p>All 11 While templates</p>
     </div>
     <div class="panel-body">
       <div class="field">
@@ -223,7 +223,7 @@ input.invalid{border-color:var(--bad);outline-color:var(--bad)}
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
-/* ---------- Data from the ContextQA catalog (Web Application workspace) ---------- */
+/* ---------- While templates and step actions ---------- */
 const q = (x, fallback) => x ? '"' + x + '"' : (fallback || 'the value');
 const el = v => v.label ? '"' + v.label + '"' : 'the element';
 
@@ -313,7 +313,7 @@ const STEP_ACTIONS = [
 
 const FIELD_NAMES = {label:'Element','test-data':'Value',source_value:'First value',target_value:'Second value',ai_task:'Task for the AI agent'};
 const FIELD_HINTS = {
-  label:'The element name as ContextQA knows it',
+  label:'The name of the element on the page',
   'test-data':'The text or value to use',
   source_value:'A value or a variable, e.g. ${order_status}',
   target_value:'The value to compare with'
@@ -524,13 +524,13 @@ function makeScenarios(){
         exp:'The steps inside the loop run 0 times. The steps after the loop still run and pass.', rows:good},
       {type:'Never-ending loop', tone:'warn', pre:'Keep the condition true the whole time: ' + phrase + ', and nothing inside the loop changes it.',
         exp:'The loop stops at the safety limit of ' + N + ' runs and the result shows the limit was reached. The run must not hang.', rows:good},
-      badCase('The run reports a clear error that names the missing element or value, or treats the condition as false and skips the loop. Write down which one ContextQA does so this test has a fixed expected result.')
+      badCase('The run reports a clear error that names the missing element or value, or treats the condition as false and skips the loop. Write down which one happens so this test has a fixed expected result.')
     ];
   } else if(m === 'if'){
     list = [
       {type:'Condition true', tone:'ok', pre:cap(phrase) + ' when the check runs.', exp:'The steps inside the If block run exactly once, then the steps after it run.', rows:good},
       {type:'Condition false', tone:'ok', pre:cap(stop) + ' before the check runs.', exp:'The steps inside the If block are skipped. The steps after it still run and pass.', rows:good},
-      badCase('The step reports a clear error that names the missing element or value, or treats the condition as false and skips the block. Write down which one ContextQA does.')
+      badCase('The step reports a clear error that names the missing element or value, or treats the condition as false and skips the block. Write down which one happens.')
     ];
   } else {
     list = [
@@ -623,7 +623,7 @@ function renderResults(){
       '</dl></div>' +
       '<div class="scenario-foot"><button class="btn small" type="button" data-copy="' + i + '">Copy test case</button></div></article>'
     ).join('') +
-    '<p class="foot-note">Action IDs come from the Web Application catalog on your ContextQA tenant. Other tenants or workspaces can use different IDs.</p>';
+    '<p class="foot-note">Action IDs can differ between workspaces. Check them before you import.</p>';
 }
 
 /* ---------- Export ---------- */
@@ -652,7 +652,7 @@ function download(filename, text, type){
   document.body.appendChild(a); a.click(); a.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
-const NOTE = 'naturalTextActionId values come from a ContextQA Web Application catalog and can differ between tenants. Confirm them with list_natural_text_actions.';
+const NOTE = 'naturalTextActionId values can differ between workspaces. Check them before you import.';
 function csvFor(list){
   const cell = v => '"' + String(v).replace(/"/g, '""') + '"';
   const lines = [['Test case', 'Scenario', 'Before you run', 'Steps', 'Expected result'].map(cell).join(',')];

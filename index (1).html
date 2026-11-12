@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>While loop test builder</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA; --ink:#18243A; --muted:#5B6880; --line:#D5DCE6;
+  --accent:#2952D9; --accent-ink:#FFFFFF; --accent-soft:#E4EAFC; --accent-strong:#1F3FAE;
+  --loop:#D08A12; --loop-soft:#FCF1DC; --loop-ink:#8A5A06;
+  --ok:#23845A; --ok-soft:#E1F3EA; --warn:#B26B00; --warn-soft:#FBEFD9; --bad:#C23B32; --bad-soft:#FBE7E5;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10151F; --surface:#182030; --surface-2:#1E2738; --ink:#E6EBF3; --muted:#98A3B8; --line:#2C374B;
+    --accent:#7393FF; --accent-ink:#0D1426; --accent-soft:#22305A; --accent-strong:#B5C6FF;
+    --loop:#F0B04A; --loop-soft:#2E2614; --loop-ink:#F5C77A;
+    --ok:#4CC38A; --ok-soft:#173326; --warn:#F0B04A; --warn-soft:#33280F; --bad:#F07167; --bad-soft:#3A1C1A;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10151F; --surface:#182030; --surface-2:#1E2738; --ink:#E6EBF3; --muted:#98A3B8; --line:#2C374B;
+  --accent:#7393FF; --accent-ink:#0D1426; --accent-soft:#22305A; --accent-strong:#B5C6FF;
+  --loop:#F0B04A; --loop-soft:#2E2614; --loop-ink:#F5C77A;
+  --ok:#4CC38A; --ok-soft:#173326; --warn:#F0B04A; --warn-soft:#33280F; --bad:#F07167; --bad-soft:#3A1C1A;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+button{font:inherit;color:inherit}
+input,select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-width:0;width:100%}
+input:focus,select:focus{outline:2px solid var(--accent);outline-offset:0;border-color:var(--accent)}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{margin:0}
+
+/* Header */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 28px;background:var(--surface);border-bottom:1px solid var(--line)}
+.top h1{font-size:1.35rem;font-weight:700;letter-spacing:-.01em}
+.top p{margin:2px 0 0;color:var(--muted);font-size:.92rem;max-width:70ch}
+
+/* Layout */
+.layout{display:grid;grid-template-columns:280px minmax(0,1fr) 410px;gap:20px;padding:20px 28px 40px;align-items:start;max-width:1640px;margin:0 auto}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;min-width:0}
+.panel-head{padding:14px 16px;border-bottom:1px solid var(--line)}
+.panel-head h2{font-size:1rem;font-weight:600}
+.panel-head p{margin:2px 0 0;color:var(--muted);font-size:.85rem}
+.panel-body{padding:16px}
+
+/* Templates */
+.templates{position:sticky;top:20px;max-height:calc(100vh - 40px);display:flex;flex-direction:column}
+.templates .panel-body{overflow:auto;padding-top:12px}
+.tgroup h3{font-size:.8rem;color:var(--muted);font-weight:600;margin:14px 0 6px}
+.tgroup:first-child h3{margin-top:4px}
+.tbtn{display:block;width:100%;text-align:left;border:1px solid transparent;background:none;padding:8px 10px;border-radius:7px;cursor:pointer;margin-bottom:2px}
+.tbtn:hover{background:var(--surface-2)}
+.tbtn[aria-pressed="true"]{background:var(--accent-soft);border-color:var(--accent)}
+.tbtn .t{display:block;font-weight:500;font-size:.92rem}
+.tbtn .id{display:block;font-size:.74rem;color:var(--muted)}
+.no-match{color:var(--muted);font-size:.85rem;padding:8px 2px}
+
+/* Builder */
+.field{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+.field label{font-size:.85rem;font-weight:500}
+.hint{font-size:.78rem;color:var(--muted);margin:0}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px}
+.cond-card{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--surface-2);margin-bottom:20px}
+.cond-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.cond-title{font-size:1.05rem;font-weight:600}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:3px;background:var(--surface)}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:6px;color:var(--muted);cursor:pointer;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.seg button:disabled{opacity:.4;cursor:not-allowed}
+.mode-note{margin:-4px 0 12px}
+
+.flow-h{font-size:.9rem;font-weight:600;margin:0 0 8px}
+.flow-block{margin-bottom:16px}
+.loop-head{border:1px solid var(--loop);border-left-width:6px;background:var(--loop-soft);color:var(--ink);border-radius:8px;padding:10px 12px;font-size:.88rem;margin:4px 0 0}
+.loop-head.verify{border-color:var(--accent);background:var(--accent-soft)}
+.loop{margin:0 0 16px 14px;padding:12px 0 6px 20px;border-left:3px solid var(--loop)}
+.loop-foot{display:flex;align-items:center;gap:8px;margin:6px 0 0 -20px;padding-left:8px;color:var(--loop-ink);font-size:.82rem;font-weight:600}
+.loop-foot svg{flex:none}
+.plain-gap{height:16px}
+
+.steps{list-style:none;margin:0;padding:0}
+.step{border:1px solid var(--line);border-radius:8px;background:var(--surface);padding:10px;margin-bottom:8px}
+.step-head{display:flex;gap:8px;align-items:center}
+.step-num{width:26px;height:26px;border-radius:50%;background:var(--surface-2);border:1px solid var(--line);display:grid;place-items:center;font-size:.75rem;font-weight:600;flex:none}
+.step-head select{flex:1}
+.icon-btn{border:1px solid var(--line);background:var(--surface);color:var(--muted);width:32px;height:32px;border-radius:6px;cursor:pointer;display:grid;place-items:center;flex:none}
+.icon-btn:hover{color:var(--ink);background:var(--surface-2)}
+.icon-btn:disabled{opacity:.35;cursor:not-allowed}
+.icon-btn.del:hover{color:var(--bad)}
+.step .fields{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px;margin-top:8px}
+.step .fields .field{margin:0}
+.preview{margin:8px 0 0;font-size:.8rem;color:var(--muted);overflow-wrap:anywhere}
+.chip{display:inline-block;padding:0 6px;border-radius:4px;background:var(--accent-soft);color:var(--accent-strong);font-weight:500}
+.chip.empty{background:transparent;border:1px dashed var(--muted);color:var(--muted);font-weight:400}
+.add-btn{width:100%;border:1px dashed var(--line);background:none;padding:8px;border-radius:8px;color:var(--accent);font-weight:500;cursor:pointer}
+.add-btn:hover{border-color:var(--accent);background:var(--accent-soft)}
+.empty-steps{color:var(--muted);font-size:.85rem;margin:0 0 8px}
+
+.btn{border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:7px;font-weight:500;cursor:pointer;white-space:nowrap}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.btn.primary:hover{filter:brightness(1.07)}
+.btn.small{padding:5px 10px;font-size:.85rem}
+.btn.danger{color:var(--bad)}
+.gen-bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:14px 16px;border-top:1px solid var(--line);background:var(--surface);border-radius:0 0 10px 10px;position:sticky;bottom:0}
+.msg{font-size:.85rem}
+.msg.error{color:var(--bad)}
+input.invalid{border-color:var(--bad);outline-color:var(--bad)}
+
+/* Results */
+.tabs{display:flex;border-bottom:1px solid var(--line)}
+.tabs button{flex:1;border:0;background:none;padding:12px;font-weight:500;color:var(--muted);border-bottom:2px solid transparent;cursor:pointer}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--accent)}
+.result-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.stale{background:var(--warn-soft);color:var(--ink);border:1px solid var(--warn);border-radius:8px;padding:8px 10px;font-size:.84rem;margin-bottom:12px}
+.empty-state{text-align:center;color:var(--muted);padding:32px 12px}
+.empty-state strong{display:block;color:var(--ink);margin-bottom:4px}
+.scenario{border:1px solid var(--line);border-radius:9px;margin-bottom:12px;overflow:hidden}
+.scenario header{padding:10px 12px;background:var(--surface-2);display:flex;justify-content:space-between;gap:8px;align-items:center;border-bottom:1px solid var(--line)}
+.scenario h3{font-size:.93rem;font-weight:600}
+.tag{font-size:.72rem;padding:2px 8px;border-radius:999px;font-weight:600;flex:none}
+.tag.ok{background:var(--ok-soft);color:var(--ok)}
+.tag.warn{background:var(--warn-soft);color:var(--warn)}
+.tag.bad{background:var(--bad-soft);color:var(--bad)}
+.sbody{padding:10px 12px}
+.sbody dl{margin:0}
+.sbody dt{font-size:.78rem;font-weight:600;color:var(--muted);margin-top:8px}
+.sbody dt:first-child{margin-top:0}
+.sbody dd{margin:2px 0 0;font-size:.88rem}
+.srows{margin-top:4px;font-size:.8rem}
+.srow{display:flex;gap:8px;padding:3px 0}
+.srow .n{color:var(--muted);min-width:18px;text-align:right;flex:none}
+.srow.in-loop{margin-left:12px;padding-left:8px;border-left:2px solid var(--loop)}
+.srow.cond .txt{font-weight:600}
+.srow.marker{color:var(--loop-ink);font-weight:600;margin-left:26px}
+.scenario-foot{padding:0 12px 10px}
+
+.saved-item{border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.saved-item h3{font-size:.92rem;font-weight:600}
+.saved-item p{margin:2px 0 0;font-size:.78rem;color:var(--muted)}
+.saved-item .btns{display:flex;gap:6px;flex:none}
+
+.foot-note{color:var(--muted);font-size:.78rem;margin:12px 0 0}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:10}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:1250px){
+  .layout{grid-template-columns:260px minmax(0,1fr)}
+  .results{grid-column:1 / -1}
+}
+@media (max-width:820px){
+  .layout{grid-template-columns:1fr;padding:14px 14px 32px;gap:14px}
+  .templates{position:static;max-height:340px}
+  .top{padding:14px;flex-wrap:wrap}
+  .gen-bar{position:static}
+}
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div>
+    <h1>While loop test builder</h1>
+    <p>Pick a ContextQA condition, add the steps to repeat, and generate the test cases that check the loop works.</p>
+  </div>
+  <button class="btn" id="themeBtn" type="button">Dark mode</button>
+</header>
+
+<main class="layout">
+  <aside class="panel templates" aria-label="Condition templates">
+    <div class="panel-head">
+      <h2>Conditions</h2>
+      <p>11 While templates from your ContextQA catalog</p>
+    </div>
+    <div class="panel-body">
+      <div class="field">
+        <label for="search">Search</label>
+        <input id="search" type="search" placeholder="e.g. visible, input, 696" autocomplete="off">
+      </div>
+      <div id="templateList"></div>
+    </div>
+  </aside>
+
+  <section class="panel builder" aria-label="Test builder">
+    <div class="panel-head">
+      <h2>Build the test</h2>
+      <p>Steps run from top to bottom. The highlighted block is the loop.</p>
+    </div>
+    <div class="panel-body" id="builder"></div>
+    <div class="gen-bar">
+      <button class="btn primary" id="genBtn" type="button">Generate test cases</button>
+      <button class="btn" id="resetBtn" type="button">Start over</button>
+      <span id="genMsg" class="msg" role="status" aria-live="polite"></span>
+    </div>
+  </section>
+
+  <section class="panel results" aria-label="Results">
+    <div class="tabs" role="tablist">
+      <button role="tab" id="tabGen" aria-selected="true" type="button">Generated</button>
+      <button role="tab" id="tabSaved" aria-selected="false" type="button">Saved</button>
+    </div>
+    <div class="panel-body" id="results"></div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+/* ---------- Data from the ContextQA catalog (Web Application workspace) ---------- */
+const q = (x, fallback) => x ? '"' + x + '"' : (fallback || 'the value');
+const el = v => v.label ? '"' + v.label + '"' : 'the element';
+
+const CONDITIONS = [
+  { key:'enabled', group:'Element state', title:'Element is enabled',
+    while:{id:190,name:'verifyElementEnabledWhile',text:'While element #{label} is enabled'},
+    if:{id:684,name:'verifyElementEnabledIf',text:'Check that the #{label} is enabled'},
+    verify:{id:590,name:'verifyElementIsenable',text:'Verify that the #{label} is enabled or clickable.'},
+    ex:{label:'Next page button'}, stop:v => el(v) + ' turns disabled' },
+  { key:'disabled', group:'Element state', title:'Element is disabled',
+    while:{id:582,name:'verifyElementDisabledWhile',text:'While element #{label} is disabled'},
+    if:{id:685,name:'verifyElementDisabledIf',text:'Check that the #{label} is disabled'},
+    verify:{id:549,name:'verifyElementIsDisable',text:'Verify that the #{label} is disabled or not clickable.'},
+    ex:{label:'Submit button'}, stop:v => el(v) + ' turns enabled' },
+  { key:'visible', group:'Element state', title:'Element is visible',
+    while:{id:191,name:'verifyElementVisibleWhile',text:'While element #{label} is visible on the page'},
+    if:{id:682,name:'verifyElementVisibleIf',text:'Check that the #{label} is visible'},
+    verify:{id:184,name:'verifyElementVisible',text:'Verify that the #{label} is present (available/displayed/etc.)'},
+    ex:{label:'Loading spinner'}, stop:v => el(v) + ' disappears' },
+  { key:'notVisible', group:'Element state', title:'Element is not visible',
+    while:{id:553,name:'verifyElementNotVisibleWhile',text:'While element #{label} is not visible on the page'},
+    if:{id:683,name:'verifyElementNotVisibleIf',text:'Check that the #{label} is not visible'},
+    verify:{id:548,name:'verifyElementIsNotVisible',text:'Verify that the #{label} is not present/displayed.'},
+    ex:{label:'Success message'}, stop:v => el(v) + ' appears' },
+  { key:'textVisible', group:'Text on the page', title:'Text is visible (text in element field)',
+    while:{id:554,name:'verifyTextVisibleWhile',text:'While text #{label} is visible on the page'},
+    if:{id:564,name:'waitUntilTextIsDisplayedIF',text:'Check the text #{label} is present on the current page'},
+    verify:null,
+    ex:{label:'Processing your request'}, fieldNames:{label:'Text'},
+    stop:v => 'the text ' + q(v.label, 'the text') + ' is no longer on the page' },
+  { key:'pageText', group:'Text on the page', title:'Page shows text',
+    while:{id:694,name:'verifyTextPresentWhile',text:'While the current page displays text #{test-data}'},
+    if:{id:676,name:'verifyTextPresentIf',text:'Check that the current page displays text #{test-data}'},
+    verify:{id:467,name:'verifyTextPresent',text:'Verify that the current page displays text #{test-data}'},
+    ex:{'test-data':'Load more'}, fieldNames:{'test-data':'Text'},
+    stop:v => 'the page no longer shows the text ' + q(v['test-data']) },
+  { key:'pageNoText', group:'Text on the page', title:'Page does not show text',
+    while:{id:695,name:'verifyTextAbsentWhile',text:'While the current page does not display text #{test-data}'},
+    if:{id:677,name:'verifyTextAbsentIf',text:'Check that the current page does not display text #{test-data}'},
+    verify:{id:168,name:'verifyTextAbsent',text:'Verify that the current page does not displays text #{test-data}'},
+    ex:{'test-data':'Order complete'}, fieldNames:{'test-data':'Text'},
+    stop:v => 'the page shows the text ' + q(v['test-data']) },
+  { key:'elText', group:'Element text and inputs', title:'Element text contains',
+    while:{id:696,name:'verifyTextContainsWhile',text:'While the #{label} text contains #{test-data}'},
+    if:{id:680,name:'verifyTextContainsIf',text:'Check that the #{label} text contains #{test-data}'},
+    verify:{id:105,name:'verifyTextContains',text:'Verify that the #{label} text contains #{test-data}'},
+    ex:{label:'Status badge','test-data':'Pending'},
+    stop:v => 'the text of ' + el(v) + ' no longer contains ' + q(v['test-data']) },
+  { key:'inputHas', group:'Element text and inputs', title:'Input has value',
+    while:{id:570,name:'verifyTextBoxValueEqualsWhile',text:'While inputbox #{label} does contain #{test-data} value'},
+    if:{id:686,name:'verifyValueIf',text:'Check that the #{label} inputbox has value #{test-data}'},
+    verify:{id:132,name:'verifyValue',text:'Verify that the #{label} inputbox has value #{test-data}'},
+    ex:{label:'Quantity field','test-data':'0'},
+    stop:v => el(v) + ' no longer has the value ' + q(v['test-data']) },
+  { key:'inputNot', group:'Element text and inputs', title:'Input does not have value',
+    while:{id:569,name:'verifyTextBoxValueNotEqualsWhile',text:"While inputbox #{label} doesn't contain #{test-data} value"},
+    if:{id:687,name:'verifyValueNotEqualIf',text:'Check that the #{label} inputbox does not have value #{test-data}'},
+    verify:{id:577,name:'verifyValueNotEqual',text:'Verify that the #{label} inputbox has not value #{test-data}'},
+    ex:{label:'Quantity field','test-data':'5'},
+    stop:v => el(v) + ' has the value ' + q(v['test-data']) },
+  { key:'equals', group:'Variables', title:'Two values are equal',
+    while:{id:697,name:'verifyEqualsValuesWhile',text:'While #{source_value} equals #{target_value}'},
+    if:null,
+    verify:{id:561,name:'verifyEqualsValues',text:'Verify the #{source_value} equals to #{target_value}'},
+    ex:{source_value:'${order_status}', target_value:'pending'},
+    stop:v => q(v.source_value) + ' no longer equals ' + q(v.target_value) }
+];
+
+const STEP_ACTIONS = [
+  {id:425,name:'navigateToUrl',label:'Go to a URL',text:'Navigate to #{test-data}',fields:{'test-data':'URL'}},
+  {id:26,name:'click',label:'Click',text:'Click on #{label}'},
+  {id:154,name:'clickIfPresent',label:'Click if present',text:'Click on #{label} if Present'},
+  {id:70,name:'enter',label:'Type into a field',text:'Enter #{test-data} in the #{label} field',fields:{'test-data':'Text to type'}},
+  {id:13,name:'clear',label:'Clear a field',text:'Clear the value displayed in the #{label} field'},
+  {id:456,name:'pressKey',label:'Press a key',text:'Press #{test-data} Key',fields:{'test-data':'Key'}},
+  {id:116,name:'think',label:'Wait seconds',text:'Wait for #{test-data} seconds',fields:{'test-data':'Seconds'}},
+  {id:185,name:'waitUntilElementIsTestData',label:'Wait for an element',text:'Wait until the #{label} is (visible/selected/enabled/clickable/etc.)'},
+  {id:584,name:'scroll_one_bottom',label:'Scroll down one screen',text:'Scroll one screen bottom'},
+  {id:592,name:'BrowserRefreshButtons',label:'Refresh the page',text:'Click on the Refresh button in the browser'},
+  {id:184,name:'verifyElementVisible',label:'Verify an element is shown',text:'Verify that the #{label} is present (available/displayed/etc.)'},
+  {id:105,name:'verifyTextContains',label:'Verify element text contains',text:'Verify that the #{label} text contains #{test-data}',fields:{'test-data':'Expected text'}},
+  {id:467,name:'verifyTextPresent',label:'Verify the page shows text',text:'Verify that the current page displays text #{test-data}',fields:{'test-data':'Text'}},
+  {id:130,name:'storeText',label:'Save element text to a variable',text:'Store text from #{label} in a variable #{test-data}',fields:{'test-data':'Variable name'}},
+  {id:568,name:'ai_text_actions',label:'AI agent step',text:'AI Agent #{ai_task}'},
+  {id:560,name:'note',label:'Note',text:'Note: #{test-data}',fields:{'test-data':'Note'}}
+];
+
+const FIELD_NAMES = {label:'Element','test-data':'Value',source_value:'First value',target_value:'Second value',ai_task:'Task for the AI agent'};
+const FIELD_HINTS = {
+  label:'The element name as ContextQA knows it',
+  'test-data':'The text or value to use',
+  source_value:'A value or a variable, e.g. ${order_status}',
+  target_value:'The value to compare with'
+};
+const MODE_LABEL = {while:'While', if:'If', verify:'Verify'};
+
+/* ---------- Helpers ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const PH = /[#@]\{([^}]+)\}/g;
+let uidN = 0;
+const uid = () => 's' + (++uidN) + '_' + Math.random().toString(36).slice(2, 7);
+const keysOf = text => [...new Set([...text.matchAll(PH)].map(m => m[1]))];
+const fieldName = (key, src) => (src && src.fieldNames && src.fieldNames[key]) || (src && src.fields && src.fields[key]) || FIELD_NAMES[key] || key;
+const fillPlain = (text, vals, src) => text.replace(PH, (m, k) => vals[k] ? '"' + vals[k] + '"' : '[' + fieldName(k, src) + ']');
+const fillHtml = (text, vals, src) => esc(text).replace(PH, (m, k) => vals[k]
+  ? '<span class="chip">' + esc(vals[k]) + '</span>'
+  : '<span class="chip empty">' + esc(fieldName(k, src)) + '</span>');
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const actionById = id => STEP_ACTIONS.find(a => a.id === id);
+const condByKey = k => CONDITIONS.find(c => c.key === k);
+const slug = s => (s || 'test-case').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'test-case';
+const clone = o => JSON.parse(JSON.stringify(o));
+
+function toast(text){
+  const t = $('#toast'); t.textContent = text; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2200);
+}
+function store(key, val){ try{ if(val === undefined) return localStorage.getItem(key); localStorage.setItem(key, val); }catch(e){ return null; } }
+
+/* ---------- State ---------- */
+function freshState(){
+  return {
+    name:'Products pagination',
+    condKey:'enabled',
+    mode:'while',
+    condValues:{label:'Next page button'},
+    maxIter:20,
+    sections:{
+      before:[{uid:uid(), actionId:425, values:{'test-data':'https://shop.example.com/products'}}],
+      body:[
+        {uid:uid(), actionId:26, values:{label:'Next page button'}},
+        {uid:uid(), actionId:184, values:{label:'Product list'}}
+      ],
+      after:[{uid:uid(), actionId:105, values:{label:'Page indicator','test-data':'Last page'}}]
+    },
+    scenarios:[],
+    dirty:false
+  };
+}
+let state = freshState();
+let tab = 'generated';
+let searchText = '';
+const SAVE_KEY = 'whileLoopBuilder.saved';
+const loadSaved = () => { try{ return JSON.parse(store(SAVE_KEY) || '[]') || []; }catch(e){ return []; } };
+const writeSaved = list => store(SAVE_KEY, JSON.stringify(list));
+
+const cond = () => condByKey(state.condKey);
+const condAction = () => cond()[state.mode];
+function markDirty(){ if(state.scenarios.length && !state.dirty){ state.dirty = true; renderResults(); } }
+
+/* ---------- Templates panel ---------- */
+function renderTemplates(){
+  const s = searchText.trim().toLowerCase();
+  const groups = [...new Set(CONDITIONS.map(c => c.group))];
+  let html = '';
+  groups.forEach(g => {
+    const items = CONDITIONS.filter(c => c.group === g).filter(c => !s ||
+      (c.title + ' ' + c.while.text + ' ' + c.while.name + ' ' + c.while.id).toLowerCase().includes(s));
+    if(!items.length) return;
+    html += '<div class="tgroup"><h3>' + esc(g) + '</h3>';
+    items.forEach(c => {
+      html += '<button type="button" class="tbtn" data-cond="' + c.key + '" aria-pressed="' + (c.key === state.condKey) + '">' +
+        '<span class="t">' + esc(c.title) + '</span><span class="id mono">' + esc(c.while.name) + ', ID ' + c.while.id + '</span></button>';
+    });
+    html += '</div>';
+  });
+  $('#templateList').innerHTML = html || '<p class="no-match">No condition matches “' + esc(searchText) + '”. Try “text”, “input” or an action ID.</p>';
+}
+
+/* ---------- Builder ---------- */
+function stepHtml(sec, step, i, total){
+  const a = actionById(step.actionId);
+  const opts = STEP_ACTIONS.map(x => '<option value="' + x.id + '"' + (x.id === step.actionId ? ' selected' : '') + '>' + esc(x.label) + '</option>').join('');
+  const fields = keysOf(a.text).map(k => {
+    const id = 'f_' + step.uid + '_' + k.replace(/[^a-z0-9]/gi, '');
+    return '<div class="field"><label for="' + id + '">' + esc(fieldName(k, a)) + '</label>' +
+      '<input id="' + id + '" data-uid="' + step.uid + '" data-field="' + esc(k) + '" value="' + esc(step.values[k] || '') + '"></div>';
+  }).join('');
+  return '<li class="step">' +
+    '<div class="step-head"><span class="step-num">' + (i + 1) + '</span>' +
+    '<select aria-label="Step action" data-uid="' + step.uid + '" data-act="action">' + opts + '</select>' +
+    '<button type="button" class="icon-btn" data-uid="' + step.uid + '" data-act="up" aria-label="Move step up"' + (i === 0 ? ' disabled' : '') + '>' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 3 2.5 8h9z" fill="currentColor"/></svg></button>' +
+    '<button type="button" class="icon-btn" data-uid="' + step.uid + '" data-act="down" aria-label="Move step down"' + (i === total - 1 ? ' disabled' : '') + '>' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M7 11 2.5 6h9z" fill="currentColor"/></svg></button>' +
+    '<button type="button" class="icon-btn del" data-uid="' + step.uid + '" data-act="remove" aria-label="Remove step">' +
+      '<svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true"><path d="M3 3l8 8M11 3l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button>' +
+    '</div>' +
+    (fields ? '<div class="fields">' + fields + '</div>' : '') +
+    '<p class="preview mono" id="pv_' + step.uid + '">' + fillHtml(a.text, step.values, a) + ' <span class="hint">(' + esc(a.name) + ', ID ' + a.id + ')</span></p>' +
+    '</li>';
+}
+
+function sectionHtml(sec, emptyText, addText){
+  const list = state.sections[sec];
+  return (list.length
+      ? '<ul class="steps">' + list.map((s, i) => stepHtml(sec, s, i, list.length)).join('') + '</ul>'
+      : '<p class="empty-steps">' + esc(emptyText) + '</p>') +
+    '<button type="button" class="add-btn" data-add="' + sec + '">+ ' + esc(addText) + '</button>';
+}
+
+function renderBuilder(){
+  const c = cond(), m = state.mode, a = condAction();
+  const keys = keysOf(a.text);
+  const condFields = keys.map(k => {
+    const id = 'c_' + k.replace(/[^a-z0-9]/gi, '');
+    return '<div class="field"><label for="' + id + '">' + esc(fieldName(k, c)) + '</label>' +
+      '<input id="' + id + '" data-cond-field="' + esc(k) + '" value="' + esc(state.condValues[k] || '') + '" placeholder="' + esc(c.ex[k] || '') + '">' +
+      '<p class="hint">' + esc(k === 'label' && c.fieldNames && c.fieldNames.label ? 'The exact text to look for' : (FIELD_HINTS[k] || '')) + '</p></div>';
+  }).join('');
+
+  const seg = ['while', 'if', 'verify'].map(md => {
+    const available = !!c[md];
+    return '<button type="button" data-mode="' + md + '" aria-pressed="' + (m === md) + '"' +
+      (available ? '' : ' disabled title="This condition has no ' + MODE_LABEL[md] + ' version in the catalog"') + '>' + MODE_LABEL[md] + '</button>';
+  }).join('');
+
+  const modeNote = {
+    while:'The steps inside the loop repeat as long as the condition is true.',
+    if:'The steps inside run once, only if the condition is true.',
+    verify:'The test fails if the condition is false. There is no inner block.'
+  }[m];
+
+  const loopIcon = '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8a5 5 0 1 1-1.5-3.6M13 2.5v2.8h-2.8" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+  let flow = '<div class="flow-block"><h3 class="flow-h">Steps before the ' + (m === 'verify' ? 'check' : 'loop') + '</h3>' +
+    sectionHtml('before', 'No steps yet. Most tests start by going to a URL.', 'Add a step before') + '</div>';
+
+  flow += '<p class="loop-head mono' + (m === 'verify' ? ' verify' : '') + '" id="condPreview">' + fillHtml(a.text, state.condValues, c) + '</p>';
+
+  if(m === 'verify'){
+    flow += '<div class="plain-gap"></div><div class="flow-block"><h3 class="flow-h">Steps after the check</h3>' +
+      sectionHtml('body', 'No steps here.', 'Add a step') + '</div>';
+  } else {
+    flow += '<div class="loop"><h3 class="flow-h">' + (m === 'while' ? 'Steps to repeat' : 'Steps that run if true') + '</h3>' +
+      sectionHtml('body', m === 'while' ? 'Add at least one step. Something in here should change the condition, or the loop never ends.' : 'Add the steps to run when the condition is true.', 'Add a step inside the ' + (m === 'while' ? 'loop' : 'If block')) +
+      '<p class="loop-foot">' + (m === 'while' ? loopIcon + 'Repeats while the condition is true' : 'Runs once, only if the condition is true') + '</p></div>';
+  }
+
+  flow += '<div class="flow-block"><h3 class="flow-h">' + (m === 'verify' ? 'Final steps' : 'Steps after the ' + (m === 'while' ? 'loop' : 'If block')) + '</h3>' +
+    sectionHtml('after', 'Optional. Add a check that proves the loop finished correctly.', 'Add a step after') + '</div>';
+
+  $('#builder').innerHTML =
+    '<div class="field"><label for="tcName">Test case name</label><input id="tcName" value="' + esc(state.name) + '" placeholder="e.g. Products pagination"></div>' +
+    '<div class="cond-card">' +
+      '<div class="cond-top"><div><h3 class="cond-title">' + esc(c.title) + '</h3>' +
+      '<p class="hint mono">' + esc(a.name) + ', action ID ' + a.id + '</p></div>' +
+      '<div class="seg" role="group" aria-label="Step type">' + seg + '</div></div>' +
+      '<p class="hint mode-note">' + esc(modeNote) + '</p>' +
+      '<div class="row">' + condFields +
+      (m === 'while' ? '<div class="field"><label for="maxIter">Safety limit (max loop runs)</label><input id="maxIter" type="number" min="1" max="1000" value="' + state.maxIter + '"><p class="hint">Used in the never-ending loop test</p></div>' : '') +
+      '</div>' +
+    '</div>' + flow;
+}
+
+function findStep(id){
+  for(const sec of ['before', 'body', 'after']){
+    const i = state.sections[sec].findIndex(s => s.uid === id);
+    if(i > -1) return {sec, i, step:state.sections[sec][i]};
+  }
+  return null;
+}
+
+/* ---------- Scenario generation ---------- */
+function buildRows(condVals){
+  const rows = [];
+  const add = (sec, kind) => state.sections[sec].forEach(s => {
+    const a = actionById(s.actionId);
+    rows.push({kind, text:fillPlain(a.text, s.values, a), displayName:a.name, naturalTextActionId:a.id, values:clone(s.values), block:sec});
+  });
+  const ca = condAction();
+  add('before', 'step');
+  rows.push({kind:'cond', text:fillPlain(ca.text, condVals, cond()), displayName:ca.name, naturalTextActionId:ca.id, values:clone(condVals), block:'condition'});
+  if(state.mode === 'verify'){ add('body', 'step'); }
+  else { add('body', 'loop'); rows.push({kind:'marker', text:state.mode === 'while' ? 'End of loop' : 'End of If block'}); }
+  add('after', 'step');
+  return rows;
+}
+
+function makeScenarios(){
+  const c = cond(), m = state.mode, v = state.condValues, N = state.maxIter;
+  const phrase = fillPlain(c.while.text, v, c).replace(/^While /, '');
+  const stop = c.stop(v);
+  const bad = {...v};
+  keysOf(condAction().text).forEach(k => {
+    bad[k] = k === 'label' ? (c.fieldNames && c.fieldNames.label ? 'zz text that does not exist zz' : 'Missing element xyz')
+      : k === 'source_value' ? '${undefined_variable}' : 'zz_missing_value_zz';
+  });
+  const good = buildRows(v), wrong = buildRows(bad);
+  const badCase = (exp) => ({type:'Bad input', tone:'bad', pre:'The condition uses an element or value that does not exist on the page.', exp, rows:wrong});
+  let list;
+  if(m === 'while'){
+    list = [
+      {type:'Normal loop', tone:'ok', pre:'At the start, ' + phrase + '. After a few runs of the loop, ' + stop + '.',
+        exp:'The steps inside the loop run at least once and fewer than ' + N + ' times. When ' + stop + ', the loop ends and the steps after it run and pass.', rows:good},
+      {type:'Loop skipped', tone:'ok', pre:cap(stop) + ' before the loop is reached, so the condition is false at the first check.',
+        exp:'The steps inside the loop run 0 times. The steps after the loop still run and pass.', rows:good},
+      {type:'Never-ending loop', tone:'warn', pre:'Keep the condition true the whole time: ' + phrase + ', and nothing inside the loop changes it.',
+        exp:'The loop stops at the safety limit of ' + N + ' runs and the result shows the limit was reached. The run must not hang.', rows:good},
+      badCase('The run reports a clear error that names the missing element or value, or treats the condition as false and skips the loop. Write down which one ContextQA does so this test has a fixed expected result.')
+    ];
+  } else if(m === 'if'){
+    list = [
+      {type:'Condition true', tone:'ok', pre:cap(phrase) + ' when the check runs.', exp:'The steps inside the If block run exactly once, then the steps after it run.', rows:good},
+      {type:'Condition false', tone:'ok', pre:cap(stop) + ' before the check runs.', exp:'The steps inside the If block are skipped. The steps after it still run and pass.', rows:good},
+      badCase('The step reports a clear error that names the missing element or value, or treats the condition as false and skips the block. Write down which one ContextQA does.')
+    ];
+  } else {
+    list = [
+      {type:'Verify passes', tone:'ok', pre:cap(phrase) + '.', exp:'The verify step passes and the test continues to the next steps.', rows:good},
+      {type:'Verify fails', tone:'warn', pre:cap(stop) + '.', exp:'The verify step fails with a message that explains what was expected, and the test is marked failed.', rows:good},
+      badCase('The verify step fails with a clear error that names the missing element or value.')
+    ];
+  }
+  return list.map(s => ({...s, name:(state.name || 'Untitled test') + ': ' + s.type}));
+}
+
+function validate(){
+  const problems = [];
+  document.querySelectorAll('input.invalid').forEach(i => i.classList.remove('invalid'));
+  keysOf(condAction().text).forEach(k => {
+    if(!(state.condValues[k] || '').trim()){
+      problems.push(fieldName(k, cond()) + ' in the condition');
+      const inp = document.querySelector('[data-cond-field="' + k + '"]'); if(inp) inp.classList.add('invalid');
+    }
+  });
+  ['before', 'body', 'after'].forEach(sec => state.sections[sec].forEach(s => {
+    const a = actionById(s.actionId);
+    keysOf(a.text).forEach(k => {
+      if(!(s.values[k] || '').trim()){
+        problems.push(fieldName(k, a) + ' in “' + a.label + '”');
+        const inp = document.querySelector('[data-uid="' + s.uid + '"][data-field="' + k + '"]'); if(inp) inp.classList.add('invalid');
+      }
+    });
+  }));
+  if(state.mode === 'while' && !state.sections.body.length) problems.push('at least one step inside the loop');
+  if(state.mode === 'if' && !state.sections.body.length) problems.push('at least one step inside the If block');
+  if(state.mode === 'while' && (!state.maxIter || state.maxIter < 1)) problems.push('a safety limit of 1 or more');
+  return problems;
+}
+
+/* ---------- Results panel ---------- */
+function rowsHtml(rows){
+  let n = 0;
+  return rows.map(r => {
+    if(r.kind === 'marker') return '<div class="srow marker">' + esc(r.text) + '</div>';
+    n++;
+    return '<div class="srow' + (r.kind === 'loop' ? ' in-loop' : '') + (r.kind === 'cond' ? ' cond' : '') + '"><span class="n">' + n + '</span><span class="txt">' + esc(r.text) + '</span></div>';
+  }).join('');
+}
+function rowsPlain(rows){
+  let n = 0;
+  return rows.map(r => r.kind === 'marker' ? '   (' + r.text + ')' : (r.kind === 'loop' ? '   ' : '') + (++n) + '. ' + r.text).join('\n');
+}
+
+function renderResults(){
+  $('#tabGen').setAttribute('aria-selected', tab === 'generated');
+  $('#tabSaved').setAttribute('aria-selected', tab === 'saved');
+  const saved = loadSaved();
+  $('#tabSaved').textContent = 'Saved' + (saved.length ? ' (' + saved.length + ')' : '');
+  const box = $('#results');
+
+  if(tab === 'saved'){
+    if(!saved.length){
+      box.innerHTML = '<div class="empty-state"><strong>No saved test cases</strong>Generate test cases, then select Save to keep them here in this browser.</div>';
+      return;
+    }
+    box.innerHTML = '<div class="result-actions"><button class="btn small" type="button" data-res="downloadAll">Download all as JSON</button></div>' +
+      saved.map(it => {
+        const c = condByKey(it.data.condKey);
+        return '<div class="saved-item"><div><h3>' + esc(it.data.name || 'Untitled test') + '</h3>' +
+          '<p>' + esc(MODE_LABEL[it.data.mode]) + ': ' + esc(c ? c.title : '') + '. ' + it.scenarios.length + ' test cases, saved ' + esc(new Date(it.savedAt).toLocaleString()) + '</p></div>' +
+          '<div class="btns"><button class="btn small" type="button" data-open="' + it.id + '">Open</button>' +
+          '<button class="btn small danger" type="button" data-delete="' + it.id + '">Delete</button></div></div>';
+      }).join('');
+    return;
+  }
+
+  if(!state.scenarios.length){
+    box.innerHTML = '<div class="empty-state"><strong>No test cases yet</strong>Fill in the condition, add the steps, then select Generate test cases.</div>';
+    return;
+  }
+  box.innerHTML =
+    (state.dirty ? '<div class="stale">You changed the test after generating. Select Generate test cases again to update these.</div>' : '') +
+    '<div class="result-actions">' +
+      '<button class="btn small primary" type="button" data-res="save">Save</button>' +
+      '<button class="btn small" type="button" data-res="json">Download JSON</button>' +
+      '<button class="btn small" type="button" data-res="csv">Download CSV</button>' +
+    '</div>' +
+    state.scenarios.map((s, i) =>
+      '<article class="scenario"><header><h3>' + esc(s.name) + '</h3><span class="tag ' + s.tone + '">' + esc(s.type) + '</span></header>' +
+      '<div class="sbody"><dl>' +
+        '<dt>Before you run</dt><dd>' + esc(s.pre) + '</dd>' +
+        '<dt>Steps</dt><dd><div class="srows mono">' + rowsHtml(s.rows) + '</div></dd>' +
+        '<dt>Expected result</dt><dd>' + esc(s.exp) + '</dd>' +
+      '</dl></div>' +
+      '<div class="scenario-foot"><button class="btn small" type="button" data-copy="' + i + '">Copy test case</button></div></article>'
+    ).join('') +
+    '<p class="foot-note">Action IDs come from the Web Application catalog on your ContextQA tenant. Other tenants or workspaces can use different IDs.</p>';
+}
+
+/* ---------- Export ---------- */
+function exportObject(src, scenarios){
+  const c = condByKey(src.condKey), ca = c[src.mode];
+  const steps = [];
+  const push = (sec, block) => src.sections[sec].forEach(s => {
+    const a = actionById(s.actionId);
+    steps.push({block, displayName:a.name, naturalTextActionId:a.id, template:a.text, text:fillPlain(a.text, s.values, a), values:s.values});
+  });
+  push('before', 'before');
+  steps.push({block:'condition', displayName:ca.name, naturalTextActionId:ca.id, template:ca.text, text:fillPlain(ca.text, src.condValues, c), values:src.condValues});
+  push('body', src.mode === 'verify' ? 'after' : 'inside');
+  push('after', 'after');
+  return {
+    name:src.name, mode:src.mode, maxIterations:src.mode === 'while' ? src.maxIter : null,
+    condition:{title:c.title, displayName:ca.name, naturalTextActionId:ca.id, template:ca.text, values:src.condValues},
+    steps,
+    scenarios:scenarios.map(s => ({name:s.name, type:s.type, precondition:s.pre, expected:s.exp, steps:rowsPlain(s.rows).split('\n')}))
+  };
+}
+function download(filename, text, type){
+  const blob = new Blob([text], {type});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+const NOTE = 'naturalTextActionId values come from a ContextQA Web Application catalog and can differ between tenants. Confirm them with list_natural_text_actions.';
+function csvFor(list){
+  const cell = v => '"' + String(v).replace(/"/g, '""') + '"';
+  const lines = [['Test case', 'Scenario', 'Before you run', 'Steps', 'Expected result'].map(cell).join(',')];
+  list.forEach(s => lines.push([s.name, s.type, s.pre, rowsPlain(s.rows), s.exp].map(cell).join(',')));
+  return lines.join('\r\n');
+}
+
+/* ---------- Events ---------- */
+$('#search').addEventListener('input', e => { searchText = e.target.value; renderTemplates(); });
+
+$('#templateList').addEventListener('click', e => {
+  const b = e.target.closest('[data-cond]'); if(!b) return;
+  const c = condByKey(b.dataset.cond);
+  state.condKey = c.key;
+  if(!c[state.mode]) state.mode = 'while';
+  const vals = {};
+  keysOf(c[state.mode].text).forEach(k => vals[k] = c.ex[k] || '');
+  state.condValues = vals;
+  markDirty(); renderTemplates(); renderBuilder();
+  if(window.innerWidth < 820) $('#builder').scrollIntoView({behavior:'smooth', block:'start'});
+});
+
+$('#builder').addEventListener('input', e => {
+  const t = e.target;
+  t.classList.remove('invalid');
+  if(t.id === 'tcName'){ state.name = t.value; markDirty(); return; }
+  if(t.id === 'maxIter'){ state.maxIter = parseInt(t.value, 10) || 0; markDirty(); return; }
+  if(t.dataset.condField){
+    state.condValues[t.dataset.condField] = t.value;
+    $('#condPreview').innerHTML = fillHtml(condAction().text, state.condValues, cond());
+    markDirty(); return;
+  }
+  if(t.dataset.field && t.dataset.uid){
+    const f = findStep(t.dataset.uid); if(!f) return;
+    f.step.values[t.dataset.field] = t.value;
+    const a = actionById(f.step.actionId);
+    $('#pv_' + f.step.uid).innerHTML = fillHtml(a.text, f.step.values, a) + ' <span class="hint">(' + esc(a.name) + ', ID ' + a.id + ')</span>';
+    markDirty();
+  }
+});
+
+$('#builder').addEventListener('change', e => {
+  const t = e.target;
+  if(t.dataset.act === 'action'){
+    const f = findStep(t.dataset.uid); if(!f) return;
+    const a = actionById(parseInt(t.value, 10));
+    const kept = {};
+    keysOf(a.text).forEach(k => { if(f.step.values[k]) kept[k] = f.step.values[k]; });
+    f.step.actionId = a.id; f.step.values = kept;
+    markDirty(); renderBuilder();
+    const sel = document.querySelector('select[data-uid="' + f.step.uid + '"]'); if(sel) sel.focus();
+  }
+});
+
+$('#builder').addEventListener('click', e => {
+  const modeBtn = e.target.closest('[data-mode]');
+  if(modeBtn && !modeBtn.disabled){
+    state.mode = modeBtn.dataset.mode;
+    const keys = keysOf(condAction().text), vals = {};
+    keys.forEach(k => vals[k] = state.condValues[k] || cond().ex[k] || '');
+    state.condValues = vals;
+    markDirty(); renderBuilder(); return;
+  }
+  const add = e.target.closest('[data-add]');
+  if(add){
+    const sec = add.dataset.add;
+    const s = {uid:uid(), actionId:26, values:{}};
+    state.sections[sec].push(s);
+    markDirty(); renderBuilder();
+    const sel = document.querySelector('select[data-uid="' + s.uid + '"]'); if(sel) sel.focus();
+    return;
+  }
+  const b = e.target.closest('button[data-act]');
+  if(!b || b.disabled) return;
+  const f = findStep(b.dataset.uid); if(!f) return;
+  const list = state.sections[f.sec];
+  if(b.dataset.act === 'remove') list.splice(f.i, 1);
+  if(b.dataset.act === 'up' && f.i > 0) [list[f.i - 1], list[f.i]] = [list[f.i], list[f.i - 1]];
+  if(b.dataset.act === 'down' && f.i < list.length - 1) [list[f.i + 1], list[f.i]] = [list[f.i], list[f.i + 1]];
+  markDirty(); renderBuilder();
+  const again = document.querySelector('[data-uid="' + f.step.uid + '"][data-act="' + b.dataset.act + '"]');
+  if(again && !again.disabled) again.focus();
+});
+
+$('#genBtn').addEventListener('click', () => {
+  const msg = $('#genMsg');
+  const problems = validate();
+  if(problems.length){
+    msg.className = 'msg error';
+    msg.textContent = 'Fill in ' + problems.slice(0, 3).join(', ') + (problems.length > 3 ? ', and ' + (problems.length - 3) + ' more' : '') + '.';
+    const first = document.querySelector('input.invalid'); if(first) first.focus();
+    return;
+  }
+  state.scenarios = makeScenarios();
+  state.dirty = false;
+  msg.className = 'msg'; msg.textContent = state.scenarios.length + ' test cases generated.';
+  tab = 'generated'; renderResults();
+  if(window.innerWidth < 1250) $('.results').scrollIntoView({behavior:'smooth', block:'start'});
+});
+
+$('#resetBtn').addEventListener('click', () => {
+  if(!confirm('Start over? This clears the current test. Saved test cases are kept.')) return;
+  state = freshState(); state.name = ''; state.sections = {before:[], body:[], after:[]};
+  state.condValues = {}; keysOf(condAction().text).forEach(k => state.condValues[k] = '');
+  $('#genMsg').textContent = '';
+  renderTemplates(); renderBuilder(); renderResults();
+});
+
+$('#tabGen').addEventListener('click', () => { tab = 'generated'; renderResults(); });
+$('#tabSaved').addEventListener('click', () => { tab = 'saved'; renderResults(); });
+
+$('#results').addEventListener('click', async e => {
+  const t = e.target.closest('button'); if(!t) return;
+  if(t.dataset.copy !== undefined){
+    const s = state.scenarios[+t.dataset.copy];
+    const text = s.name + '\n\nBefore you run:\n' + s.pre + '\n\nSteps:\n' + rowsPlain(s.rows) + '\n\nExpected result:\n' + s.exp;
+    try{ await navigator.clipboard.writeText(text); toast('Test case copied'); }
+    catch(err){ toast('Copy is blocked here. Use Download instead.'); }
+    return;
+  }
+  const r = t.dataset.res;
+  if(r === 'save'){
+    const list = loadSaved();
+    const data = clone({...state, scenarios:undefined});
+    list.unshift({id:uid(), savedAt:Date.now(), data, scenarios:clone(state.scenarios)});
+    writeSaved(list) === null && loadSaved().length !== list.length ? toast('Could not save in this browser') : toast('Saved');
+    renderResults(); return;
+  }
+  if(r === 'json'){
+    download(slug(state.name) + '.json', JSON.stringify({note:NOTE, exportedAt:new Date().toISOString(), testCase:exportObject(state, state.scenarios)}, null, 2), 'application/json');
+    toast('JSON downloaded'); return;
+  }
+  if(r === 'csv'){ download(slug(state.name) + '.csv', csvFor(state.scenarios), 'text/csv'); toast('CSV downloaded'); return; }
+  if(r === 'downloadAll'){
+    const all = loadSaved().map(it => exportObject(it.data, it.scenarios));
+    download('while-loop-test-cases.json', JSON.stringify({note:NOTE, exportedAt:new Date().toISOString(), testCases:all}, null, 2), 'application/json');
+    toast('JSON downloaded'); return;
+  }
+  if(t.dataset.open){
+    const it = loadSaved().find(x => x.id === t.dataset.open); if(!it) return;
+    state = {...clone(it.data), scenarios:clone(it.scenarios), dirty:false};
+    tab = 'generated';
+    renderTemplates(); renderBuilder(); renderResults(); toast('Opened “' + (state.name || 'Untitled test') + '”');
+    return;
+  }
+  if(t.dataset.delete){
+    if(!confirm('Delete this saved test case?')) return;
+    writeSaved(loadSaved().filter(x => x.id !== t.dataset.delete));
+    renderResults(); toast('Deleted');
+  }
+});
+
+/* ---------- Theme ---------- */
+function isDark(){
+  const set = document.documentElement.dataset.theme;
+  return set ? set === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+function syncThemeBtn(){ $('#themeBtn').textContent = isDark() ? 'Light mode' : 'Dark mode'; }
+const savedTheme = store('whileLoopBuilder.theme');
+if(savedTheme === 'dark' || savedTheme === 'light') document.documentElement.dataset.theme = savedTheme;
+$('#themeBtn').addEventListener('click', () => {
+  const next = isDark() ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next; store('whileLoopBuilder.theme', next); syncThemeBtn();
+});
+syncThemeBtn();
+
+/* ---------- Start ---------- */
+renderTemplates(); renderBuilder(); renderResults();
+</script>
+</body>
+</html>

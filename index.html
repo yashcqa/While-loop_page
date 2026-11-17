@@ -168,6 +168,10 @@ input.invalid{border-color:var(--bad);outline-color:var(--bad)}
 @media (prefers-reduced-motion: reduce){
   *{transition:none !important;scroll-behavior:auto !important}
 }
+.pages{display:flex;gap:4px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:3px}
+.pages a{padding:6px 12px;border-radius:7px;text-decoration:none;color:var(--muted);font-weight:500;font-size:.9rem}
+.pages a:hover{color:var(--ink)}
+.pages a[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
 </style>
 </head>
 <body>
@@ -178,7 +182,7 @@ input.invalid{border-color:var(--bad);outline-color:var(--bad)}
     <p>Pick a condition, add the steps to repeat, and generate the test cases that check the loop works.</p>
   </div>
   <div style="display:flex;gap:8px;flex-wrap:wrap">
-    <a class="btn" href="playground.html" style="text-decoration:none;color:inherit">Open the practice page</a>
+    <nav class="pages" aria-label="Pages"><a href="playground.html">While loops</a><a href="for-loops.html">For loops</a><a href="conditions.html">Conditions</a><a href="index.html" aria-current="page">Test builder</a></nav>
     <button class="btn" id="themeBtn" type="button">Dark mode</button>
   </div>
 </header>

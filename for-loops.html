@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>For loop practice page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA; --ink:#18243A; --muted:#5B6880; --line:#D5DCE6;
+  --accent:#2952D9; --accent-ink:#FFFFFF; --accent-soft:#E4EAFC; --accent-strong:#1F3FAE;
+  --loop:#D08A12; --loop-soft:#FCF1DC; --loop-ink:#8A5A06;
+  --ok:#23845A; --ok-soft:#E1F3EA; --bad:#C23B32; --bad-soft:#FBE7E5; --stage:#FAFBFD;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10151F; --surface:#182030; --surface-2:#1E2738; --ink:#E6EBF3; --muted:#98A3B8; --line:#2C374B;
+    --accent:#7393FF; --accent-ink:#0D1426; --accent-soft:#22305A; --accent-strong:#B5C6FF;
+    --loop:#F0B04A; --loop-soft:#2E2614; --loop-ink:#F5C77A;
+    --ok:#4CC38A; --ok-soft:#173326; --bad:#F07167; --bad-soft:#3A1C1A; --stage:#141B28;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10151F; --surface:#182030; --surface-2:#1E2738; --ink:#E6EBF3; --muted:#98A3B8; --line:#2C374B;
+  --accent:#7393FF; --accent-ink:#0D1426; --accent-soft:#22305A; --accent-strong:#B5C6FF;
+  --loop:#F0B04A; --loop-soft:#2E2614; --loop-ink:#F5C77A;
+  --ok:#4CC38A; --ok-soft:#173326; --bad:#F07167; --bad-soft:#3A1C1A; --stage:#141B28;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+button{font:inherit}
+h1,h2,h3{margin:0}
+a{color:var(--accent)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 28px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.top h1{font-size:1.3rem;font-weight:700}
+.top p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px;padding:20px 28px 40px;max-width:1500px;margin:0 auto;align-items:start}
+.nav{position:sticky;top:20px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;max-height:calc(100vh - 40px);overflow:auto}
+.nav a{display:block;padding:5px 10px;border-radius:7px;text-decoration:none;color:var(--ink);font-size:.88rem}
+.nav a:hover{background:var(--surface-2)}
+.nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent-strong);font-weight:600}
+.nav .ngroup{margin-top:10px;padding:0 10px 2px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.nav .ngroup span{font-weight:400}
+.nav .sub{padding-left:20px}
+
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:7px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{background:var(--surface-2)}
+
+/* Overview */
+.intro{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px}
+.intro h2{font-size:1.1rem;margin-bottom:6px}
+.intro p{margin:0 0 8px;max-width:75ch}
+.intro p:last-child{margin-bottom:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{font-size:1rem}
+.card .tpl{font-size:.78rem;color:var(--muted);margin:2px 0 10px}
+.card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.card li a{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink);font-size:.9rem}
+.card li a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.ui-tag{font-size:.74rem;color:var(--muted);white-space:nowrap}
+
+/* Scenario view */
+.sc-head{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.sc-head h2{font-size:1.2rem}
+.sc-head .tpl{margin:4px 0 0;color:var(--muted);font-size:.85rem}
+.siblings{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.siblings a{font-size:.82rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.siblings a[aria-current="page"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-strong);font-weight:600}
+.setup{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.setup label{display:flex;flex-direction:column;gap:4px;font-size:.84rem;font-weight:500}
+.setup input[type=number]{width:120px;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.setup .check{flex-direction:row;align-items:center;gap:8px;padding-bottom:8px}
+.setup .check input{width:18px;height:18px;accent-color:var(--accent)}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.box-head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.box-head h3{font-size:.95rem;font-weight:600}
+.state-pill{font-size:.78rem;font-weight:600;padding:3px 10px;border-radius:999px}
+.state-pill.true{background:var(--loop-soft);color:var(--loop-ink)}
+.state-pill.false{background:var(--ok-soft);color:var(--ok)}
+.stage{background:var(--stage);padding:20px;min-height:240px}
+.meter{display:flex;gap:16px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid var(--line);font-size:.84rem;color:var(--muted)}
+.meter strong{color:var(--ink)}
+
+/* Elements under test */
+.t-btn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:9px 16px;border-radius:7px;font-weight:600;cursor:pointer}
+.t-btn:hover{filter:brightness(1.07)}
+.t-btn.secondary{background:var(--surface);color:var(--accent)}
+.t-btn:disabled{background:var(--surface-2);border-color:var(--line);color:var(--muted);cursor:not-allowed;filter:none}
+.t-btn.danger{background:var(--surface);color:var(--bad);border-color:var(--bad);padding:5px 12px}
+.t-btn.danger:hover{background:var(--bad-soft)}
+.row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:12px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.list li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.product{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.88rem;text-align:center}
+.indicator{font-weight:600;margin:0}
+.success{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);border-radius:8px;padding:10px 14px;font-weight:600;margin:0}
+.notice{color:var(--muted);margin:0;font-size:.9rem}
+.flash{background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);border-radius:8px;padding:8px 12px;margin:0;font-size:.9rem;font-weight:500}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-weight:600;font-size:.85rem}
+.badge.pending{background:var(--loop-soft);color:var(--loop-ink)}
+.badge.done{background:var(--ok-soft);color:var(--ok)}
+.field{display:flex;flex-direction:column;gap:4px;max-width:260px;flex:1;min-width:160px}
+.field label{font-size:.85rem;font-weight:500}
+.field input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+.field input[readonly]{background:var(--surface-2)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.checks label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.checks input{width:18px;height:18px;accent-color:var(--ok)}
+.steps-bar{display:flex;gap:6px;flex-wrap:wrap}
+.steps-bar span{padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+.steps-bar span.on{border-color:var(--accent);color:var(--accent-strong);background:var(--accent-soft);font-weight:600}
+.status-chip{display:inline-block;background:var(--loop-soft);color:var(--loop-ink);border-radius:6px;padding:4px 10px;font-weight:600;margin:0;align-self:flex-start}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--surface)}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:.8rem}
+.dialog-backdrop{position:relative;border-radius:10px;padding:18px;background:rgba(24,36,58,.35)}
+.dialog{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;max-width:340px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.dialog h3{font-size:1rem;margin-bottom:4px}
+.dialog p{margin:0 0 12px;font-size:.9rem}
+.slide{height:130px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:1.2rem;color:#fff}
+.progress{height:14px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.progress span{display:block;height:100%;background:var(--accent);transition:width .2s}
+.timer{font-size:1.6rem;font-weight:700;margin:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips span{background:var(--accent-soft);color:var(--accent-strong);border-radius:999px;padding:2px 10px;font-size:.84rem;font-weight:500}
+fieldset{border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:0;background:var(--surface)}
+legend{font-weight:600;padding:0 4px}
+.radio{display:flex;gap:8px;align-items:center;padding:4px 0;cursor:pointer}
+.radio input{width:17px;height:17px;accent-color:var(--accent)}
+.skeleton{height:12px;border-radius:6px;background:var(--line);margin:6px 0;max-width:320px}
+.download{display:inline-block;font-weight:600}
+
+/* Steps panel (unused) */
+.cq{padding:14px 16px}
+.cq h4{font-size:.8rem;color:var(--muted);font-weight:600;margin:12px 0 4px}
+.cq h4:first-child{margin-top:0}
+.cq ol{margin:0;padding-left:20px;font-size:.84rem}
+.cq li{margin:3px 0;overflow-wrap:anywhere}
+.cq .cond{border:1px solid var(--loop);border-left-width:5px;background:var(--loop-soft);border-radius:7px;padding:8px 10px;font-size:.84rem;font-weight:500}
+.cq .inside{border-left:3px solid var(--loop);margin-left:8px;padding-left:12px}
+.cq .tip{font-size:.8rem;color:var(--muted);margin:10px 0 0}
+.cq code{font-size:.78rem;background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+.copy-row{padding:0 16px 14px}
+/* Text written by ::before is not page text, so instructions never satisfy a page-text check */
+.ref::before{content:"\201C" attr(data-text) "\201D";font-weight:600}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:10}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:1050px){ .grid2{grid-template-columns:1fr} }
+@media (max-width:780px){
+  .layout{grid-template-columns:1fr;padding:14px}
+  .nav{position:static;max-height:260px}
+  .top{padding:14px}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+
+.pages{display:flex;gap:4px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:3px}
+.pages a{padding:6px 12px;border-radius:7px;text-decoration:none;color:var(--muted);font-weight:500;font-size:.9rem}
+.pages a:hover{color:var(--ink)}
+.pages a[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:3px;background:var(--surface-2)}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:6px;color:var(--muted);cursor:pointer;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.setup .seg-wrap{display:flex;flex-direction:column;gap:4px;font-size:.84rem;font-weight:500}
+.meter .good{color:var(--ok)} .meter .bad{color:var(--bad)}
+.banner{background:var(--loop-soft);border:1px solid var(--loop);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.card-ui{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+.card-ui h3{font-size:1rem;margin-bottom:4px}
+.fixed-card{background:#FFFFFF;color:#222222;border:1px solid #D5DCE6;border-radius:10px;padding:14px}
+.switch-row{display:flex;align-items:center;gap:12px}
+.switch{width:50px;height:28px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);position:relative;cursor:pointer;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--muted);transition:left .15s}
+.switch[aria-checked="true"]{background:var(--accent);border-color:var(--accent)}
+.switch[aria-checked="true"]::after{left:25px;background:var(--accent-ink)}
+.tabs-ui{display:flex;gap:4px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs-ui .tab{border:0;background:none;padding:8px 14px;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;font-weight:500}
+.tabs-ui .tab.active{color:var(--ink);border-bottom-color:var(--accent)}
+.tab-panel{padding:12px 2px}
+.stars{font-size:1.4rem;letter-spacing:2px;color:var(--loop)}
+.stars .off{color:var(--line)}
+textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-height:80px;width:100%;max-width:420px}
+select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+tr.highlight td{background:var(--loop-soft)}
+.acc{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.acc + .acc{margin-top:6px}
+.acc button{width:100%;text-align:left;border:0;background:none;padding:10px 12px;font-weight:600;cursor:pointer;color:var(--ink)}
+.acc .acc-body{padding:0 12px 10px;font-size:.9rem;color:var(--muted)}
+.log{list-style:none;margin:0;padding:12px 16px;font-size:.84rem;max-height:420px;overflow:auto}
+.log li{padding:4px 0;border-bottom:1px solid var(--line);display:flex;gap:8px}
+.log li:last-child{border-bottom:0}
+.log .n{color:var(--muted);min-width:22px;text-align:right}
+.data-table caption{text-align:left;font-weight:600;padding:0 0 6px;font-size:.85rem}
+.mark-ok{color:var(--ok);font-weight:700}.mark-bad{color:var(--bad);font-weight:700}
+.result-area{padding:12px 16px;border-top:1px solid var(--line)}
+.hint-card{border:1px dashed var(--line);border-radius:8px;padding:8px 12px;font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>For loop practice page</h1>
+    <p>12 live scenarios for loops that must run an exact number of times: repeat N times, loop by index, and loop over data rows.</p>
+  </div>
+  <div class="top-actions">
+    <nav class="pages" aria-label="Pages"><a href="playground.html">While loops</a><a href="for-loops.html" aria-current="page">For loops</a><a href="conditions.html">Conditions</a><a href="index.html">Test builder</a></nav>
+    <button class="btn" id="themeBtn" type="button">Dark mode</button>
+  </div>
+</header>
+<div class="layout">
+  <nav class="nav" id="nav" aria-label="Scenarios"></nav>
+  <main id="view"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const R = t => '<span class="ref" data-text="' + esc(t) + '"></span>';
+const $ = s => document.querySelector(s);
+const B = (id, text, act, o = {}) => '<button type="button" class="t-btn ' + (o.cls || '') + '"' + (o.multi ? '' : ' id="' + id + '"') +
+  ' data-testid="' + id + '" data-do="' + act + '"' + (o.i !== undefined ? ' data-i="' + o.i + '"' : '') + (o.disabled ? ' disabled' : '') +
+  (o.aria ? ' aria-label="' + esc(o.aria) + '"' : '') + (o.attrs || '') + '>' + esc(text) + '</button>';
+const IN = (id, label, value, o = {}) => '<div class="field"><label for="' + id + '">' + esc(label) + '</label><input id="' + id + '" data-testid="' + id + '" name="' + id + '"' +
+  ' type="' + (o.type || 'text') + '" value="' + esc(value) + '"' + (o.ro ? ' readonly' : '') + (o.disabled ? ' disabled' : '') + (o.bind ? ' data-bind="' + o.bind + '"' : '') +
+  (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.attrs || '') + ' autocomplete="off"></div>';
+const OK = (id, text) => '<p class="success" id="' + id + '" data-testid="' + id + '">' + esc(text) + '</p>';
+const ERR = (id, text) => '<p class="flash" id="' + id + '" data-testid="' + id + '">' + esc(text) + '</p>';
+const NOTE = t => '<p class="notice">' + t + '</p>';
+const ROW = (...x) => '<div class="row">' + x.join('') + '</div>';
+const STACK = (...x) => '<div class="stack">' + x.join('') + '</div>';
+function toast(text){
+  const t = $('#toast'); t.textContent = text; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2000);
+}
+function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
+function isDark(){ const t = document.documentElement.dataset.theme; return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+function syncTheme(){ $('#themeBtn').textContent = isDark() ? 'Light mode' : 'Dark mode'; }
+(function(){
+  const th = store('whileLoopBuilder.theme');
+  if(th === 'dark' || th === 'light') document.documentElement.dataset.theme = th;
+  $('#themeBtn').addEventListener('click', () => { const n = isDark() ? 'light' : 'dark'; document.documentElement.dataset.theme = n; store('whileLoopBuilder.theme', n); syncTheme(); });
+  syncTheme();
+})();
+
+const KEYWORDS = ['apple', 'banana', 'cherry', 'mango', 'orange', 'grape', 'lemon', 'peach', 'plum', 'kiwi'];
+const kw = i => KEYWORDS[i % KEYWORDS.length] + (i >= KEYWORDS.length ? ' ' + (Math.floor(i / KEYWORDS.length) + 1) : '');
+const COLORS = ['Red', 'Green', 'Blue', 'Yellow', 'Black', 'White', 'Orange', 'Purple', 'Pink', 'Grey'];
+const col = i => COLORS[i % COLORS.length] + (i >= COLORS.length ? ' ' + (Math.floor(i / COLORS.length) + 1) : '');
+const log = (s, text) => s.log.push(text);
+
+const GROUPS = [
+{ title:'Repeat a fixed number of times', variants:[
+  { ex:'Add to cart', ui:'Button', about:'Click Add to cart once in every loop run. After N runs the cart should hold exactly N items.',
+    init:s => { s.cart = 0; }, done:s => s.cart,
+    render:s => STACK('<div class="card-ui"><h3>Desk lamp</h3><p class="indicator">$24.00</p></div>',
+      ROW(B('add-to-cart-button', 'Add to cart', 'add')), NOTE('Items in cart: <strong id="cart-count" data-testid="cart-count">' + s.cart + '</strong>')),
+    act:{ add:s => { s.cart++; log(s, 'Clicked Add to cart (cart now ' + s.cart + ')'); } } },
+  { ex:'Arrow key counter', ui:'Keyboard', about:'Press the ArrowUp key in the Volume field once in every loop run. Each press adds 1.',
+    init:s => { s.vol = 0; }, done:s => s.vol,
+    render:s => STACK(IN('volume-field', 'Volume', s.vol, {ro:true, attrs:' data-keydo="up"'}), NOTE('Click in the field, then press ArrowUp. ArrowDown takes 1 away.')),
+    act:{ up:(s, el, key) => { if(key === 'ArrowUp'){ s.vol++; log(s, 'Pressed ArrowUp (volume ' + s.vol + ')'); } else if(key === 'ArrowDown' && s.vol > 0){ s.vol--; log(s, 'Pressed ArrowDown (volume ' + s.vol + ')'); } } } },
+  { ex:'To-do list', ui:'Input + button', about:'In every loop run, type a task and click Add task.',
+    init:s => { s.todos = []; s.todo = ''; }, done:s => s.todos.length,
+    render:s => STACK(ROW(IN('todo-field', 'Task', s.todo, {bind:'todo', ph:'e.g. Task 1'}), B('add-task-button', 'Add task', 'add')),
+      s.todos.length ? '<ul class="list" id="todo-list">' + s.todos.map((t, i) => '<li><span>' + esc(t) + '</span><span class="ui-tag">#' + (i + 1) + '</span></li>').join('') + '</ul>' : NOTE('No tasks yet.')),
+    act:{ add:s => { const t = (s.todo || '').trim() || 'Task ' + (s.todos.length + 1); s.todos.push(t); s.todo = ''; log(s, 'Added “' + t + '”'); } } }
+]},
+{ title:'Loop over items by index', variants:[
+  { ex:'Checkbox list', ui:'Checkboxes', about:'In loop run i, tick checkbox number i. Every box has the id <code>option-1</code>, <code>option-2</code> and so on.',
+    init:s => { s.box = Array(s.count).fill(false); }, done:s => s.box.filter(Boolean).length,
+    render:s => STACK('<ul class="checks">' + s.box.map((c, i) => '<li><label><input type="checkbox" id="option-' + (i + 1) + '" data-testid="list-checkbox" data-do="tick" data-i="' + i + '"' + (c ? ' checked' : '') + '> Option ' + (i + 1) + '</label></li>').join('') + '</ul>'),
+    act:{ tick:(s, el) => { const i = +el.dataset.i; s.box[i] = !s.box[i]; log(s, (s.box[i] ? 'Ticked' : 'Unticked') + ' Option ' + (i + 1)); } } },
+  { ex:'Tabs', ui:'Tabs', about:'In loop run i, click tab number i. Every tab has the id <code>tab-1</code>, <code>tab-2</code> and so on.',
+    init:s => { s.visited = []; s.cur = -1; }, done:s => s.visited.length,
+    render:s => { let t = ''; for(let i = 0; i < s.count; i++) t += '<button type="button" role="tab" class="tab' + (s.cur === i ? ' active' : '') + '" id="tab-' + (i + 1) + '" data-testid="tab" data-do="tab" data-i="' + i + '" aria-selected="' + (s.cur === i) + '">Tab ' + (i + 1) + (s.visited.includes(i) ? ' ✓' : '') + '</button>';
+      return STACK('<div class="tabs-ui" role="tablist">' + t + '</div>', '<div class="tab-panel" id="tab-content">' + (s.cur < 0 ? NOTE('No tab opened yet.') : '<p class="indicator">Content of Tab ' + (s.cur + 1) + '</p>') + '</div>'); },
+    act:{ tab:(s, el) => { const i = +el.dataset.i; s.cur = i; if(!s.visited.includes(i)) s.visited.push(i); log(s, 'Opened Tab ' + (i + 1)); } } },
+  { ex:'Dropdown options', ui:'Dropdown', about:'In loop run i, select option index i in the Colour list. Index 0 is the “Choose a colour” placeholder.',
+    init:s => { s.picked = []; s.sel = 0; }, done:s => s.picked.length,
+    render:s => { let o = '<option value=""' + (s.sel === 0 ? ' selected' : '') + '>Choose a colour</option>'; for(let i = 0; i < s.count; i++) o += '<option value="' + col(i).toLowerCase().replace(/ /g, '-') + '"' + (s.sel === i + 1 ? ' selected' : '') + '>' + col(i) + '</option>';
+      return STACK('<div class="field"><label for="colour-dropdown">Colour</label><select id="colour-dropdown" data-testid="colour-dropdown" data-change="pick">' + o + '</select></div>',
+        s.picked.length ? '<div class="chips" id="picked-colours">' + s.picked.map(i => '<span>' + col(i) + '</span>').join('') + '</div>' : NOTE('No colour picked yet.')); },
+    act:{ pick:(s, el) => { const i = el.selectedIndex; s.sel = i; if(i > 0){ if(!s.picked.includes(i - 1)) s.picked.push(i - 1); log(s, 'Selected index ' + i + ' (' + col(i - 1) + ')'); } } } }
+]},
+{ title:'Loop over data rows', variants:[
+  { ex:'Register users', ui:'Form + table', about:'Use one row of the test data in each loop run: type the name and email, then click Save user. Each saved row is checked against the data.',
+    init:s => { s.saved = []; s.nm = ''; s.em = ''; }, done:s => s.saved.length,
+    render:s => { const data = Array.from({length:s.count}, (_, i) => ['User ' + (i + 1), 'user' + (i + 1) + '@example.com']);
+      return STACK('<div class="tbl-wrap"><table class="data-table" id="test-data-table"><caption>Test data</caption><thead><tr><th>Row</th><th>Name</th><th>Email</th></tr></thead><tbody>' + data.map((d, i) => '<tr><td>' + (i + 1) + '</td><td>' + d[0] + '</td><td>' + d[1] + '</td></tr>').join('') + '</tbody></table></div>',
+        ROW(IN('user-name-field', 'Name', s.nm, {bind:'nm'}), IN('user-email-field', 'Email', s.em, {bind:'em', type:'email'}), B('save-user-button', 'Save user', 'save')),
+        s.saved.length ? '<div class="tbl-wrap"><table class="data-table" id="saved-users-table"><caption>Saved users</caption><thead><tr><th>#</th><th>Name</th><th>Email</th><th>Matches row</th></tr></thead><tbody>' +
+          s.saved.map((u, i) => { const ok = data[i] && data[i][0] === u[0] && data[i][1] === u[1]; return '<tr><td>' + (i + 1) + '</td><td>' + esc(u[0]) + '</td><td>' + esc(u[1]) + '</td><td class="' + (ok ? 'mark-ok">✓ Yes' : 'mark-bad">✗ No') + '</td></tr>'; }).join('') + '</tbody></table></div>' : ''); },
+    act:{ save:s => { s.saved.push([(s.nm || '').trim(), (s.em || '').trim()]); log(s, 'Saved ' + ((s.nm || '').trim() || '(no name)') + ', ' + ((s.em || '').trim() || '(no email)')); s.nm = ''; s.em = ''; } } },
+  { ex:'Search keywords', ui:'Search', about:'Search for one keyword from the test data in each loop run: type it and click Search.',
+    init:s => { s.done = []; s.q = ''; }, done:s => s.done.length,
+    render:s => STACK('<div class="chips" id="keyword-data" aria-label="Test data keywords">' + Array.from({length:s.count}, (_, i) => '<span>' + (i + 1) + '. ' + kw(i) + '</span>').join('') + '</div>',
+      ROW(IN('keyword-search-field', 'Search', s.q, {bind:'q', type:'search'}), B('search-button', 'Search', 'search')),
+      s.done.length ? '<ul class="list" id="search-history">' + s.done.map((q, i) => '<li><span>Results for “' + esc(q) + '”</span><span class="' + (q === kw(i) ? 'mark-ok">✓ matches row ' + (i + 1) : 'mark-bad">✗ expected ' + esc(kw(i))) + '</span></li>').join('') + '</ul>' : ''),
+    act:{ search:s => { const q = (s.q || '').trim(); s.done.push(q); log(s, 'Searched “' + (q || '(empty)') + '”'); s.q = ''; } } },
+  { ex:'Rate products', ui:'Radio buttons', about:'Give one product a rating in each loop run. Radio ids look like <code>rate-1-5</code> (product 1, 5 stars).',
+    init:s => { s.rates = Array(s.count).fill(0); }, done:s => s.rates.filter(Boolean).length,
+    render:s => STACK(s.rates.map((r, i) => '<fieldset id="product-' + (i + 1) + '"><legend>Product ' + (i + 1) + '</legend><div class="row">' +
+      [1, 2, 3, 4, 5].map(k => '<label class="radio"><input type="radio" name="rating-' + (i + 1) + '" id="rate-' + (i + 1) + '-' + k + '" data-do="rate" data-i="' + i + '" data-k="' + k + '"' + (r === k ? ' checked' : '') + '> ' + k + '</label>').join('') + '</div></fieldset>').join('')),
+    act:{ rate:(s, el) => { const i = +el.dataset.i, k = +el.dataset.k; s.rates[i] = k; log(s, 'Rated Product ' + (i + 1) + ': ' + k + ' stars'); } } }
+]},
+{ title:'Loop with an index variable', variants:[
+  { ex:'Go to page', ui:'Input + button', about:'In loop run i, type i in the Page field and click Go. Pages that do not exist show an error.',
+    init:s => { s.visited = []; s.page = ''; s.cur = 0; s.err = ''; }, done:s => s.visited.length,
+    render:s => STACK(ROW(IN('page-number-field', 'Page', s.page, {bind:'page', type:'number'}), B('go-to-page-button', 'Go', 'go')),
+      s.err ? ERR('page-error', s.err) : '', s.cur ? '<p class="indicator" id="current-page">Page ' + s.cur + ' of ' + s.count + '</p>' : NOTE('This list has ' + s.count + ' pages.'),
+      s.visited.length ? NOTE('Visited: ' + s.visited.slice().sort((a, b) => a - b).join(', ')) : ''),
+    act:{ go:s => { const p = parseInt(s.page, 10); s.page = '';
+      if(isNaN(p) || p < 1 || p > s.count){ s.err = 'Page ' + (isNaN(p) ? '(empty)' : p) + ' does not exist'; log(s, 'Tried page ' + (isNaN(p) ? '(empty)' : p) + ': error'); return; }
+      s.err = ''; s.cur = p; if(!s.visited.includes(p)) s.visited.push(p); log(s, 'Went to page ' + p); } } },
+  { ex:'Delete N items', ui:'Button list', about:'Delete the first item once in every loop run. The list starts with N + 3 items, so exactly 3 should be left.',
+    init:s => { s.items = Array.from({length:s.count + 3}, (_, i) => i + 1); s.deleted = 0; }, done:s => s.deleted,
+    render:s => STACK(NOTE('<span id="items-left">' + s.items.length + ' items left</span>'), s.items.length ? '<ul class="list">' + s.items.map((n, i) => '<li><span>Item ' + n + '</span>' + B('delete-button', 'Delete', 'del', {cls:'danger', multi:true, i}) + '</li>').join('') + '</ul>' : NOTE('The list is empty.')),
+    act:{ del:(s, el) => { const n = s.items.splice(+el.dataset.i, 1)[0]; s.deleted++; log(s, 'Deleted Item ' + n); } } },
+  { ex:'Accordion sections', ui:'Accordion', about:'In loop run i, open section number i. Section headers have the id <code>section-1</code>, <code>section-2</code> and so on.',
+    init:s => { s.open = []; }, done:s => s.open.length,
+    render:s => STACK(Array.from({length:s.count}, (_, i) => '<div class="acc"><button type="button" id="section-' + (i + 1) + '" data-testid="accordion-section" data-do="open" data-i="' + i + '" aria-expanded="' + s.open.includes(i) + '">' + (s.open.includes(i) ? '▾' : '▸') + ' Section ' + (i + 1) + '</button>' +
+      (s.open.includes(i) ? '<div class="acc-body" id="section-' + (i + 1) + '-body">Details for section ' + (i + 1) + '.</div>' : '') + '</div>').join('')),
+    act:{ open:(s, el) => { const i = +el.dataset.i; if(!s.open.includes(i)){ s.open.push(i); log(s, 'Opened Section ' + (i + 1)); } else log(s, 'Section ' + (i + 1) + ' was already open'); } } }
+]}
+];
+
+const SC = [];
+GROUPS.forEach((g, gi) => g.variants.forEach((v, i) => { v.key = 'for-' + (gi + 1) + '-' + (i + 1); v.group = g; v.num = i + 1; SC.push(v); }));
+
+/* ---------- State ---------- */
+const STATE = {};
+const params = new URLSearchParams(location.search);
+const firstHash = location.hash.slice(1);
+function getState(sc){
+  if(!STATE[sc.key]){
+    let count = 5;
+    if(sc.key === firstHash){ const c = parseInt(params.get('count'), 10); if(!isNaN(c) && c >= 1 && c <= 50) count = c; }
+    STATE[sc.key] = {count};
+    resetState(sc);
+  }
+  return STATE[sc.key];
+}
+function resetState(sc){ const s = STATE[sc.key]; s.log = []; sc.init(s); }
+
+/* ---------- Render ---------- */
+function renderNav(current){
+  let h = '<a href="#"' + (current ? '' : ' aria-current="page"') + '>All scenarios</a>';
+  GROUPS.forEach(g => {
+    h += '<div class="ngroup">' + esc(g.title) + '</div>';
+    g.variants.forEach(v => { h += '<a class="sub" href="#' + v.key + '"' + (current === v ? ' aria-current="page"' : '') + '>' + esc(v.ex) + '</a>'; });
+  });
+  $('#nav').innerHTML = h;
+}
+function renderOverview(){
+  renderNav(null); document.title = 'For loop practice page';
+  $('#view').innerHTML =
+    '<section class="intro"><h2>How to use this page</h2>' +
+    '<p>Each scenario is a small page for testing a For loop: an action that should happen an exact number of times. Set the number of iterations (N), run your loop, and the page tells you if it ran exactly N times.</p>' +
+    '<p>If your loop runs too few or too many times, the result shows it. This makes off-by-one mistakes easy to catch.</p></section>' +
+    '<div class="cards">' + GROUPS.map(g => '<article class="card"><h3>' + esc(g.title) + '</h3><p class="tpl">' + g.variants.length + ' scenarios</p><ul>' +
+      g.variants.map(v => '<li><a href="#' + v.key + '"><span>' + esc(v.ex) + '</span><span class="ui-tag">' + esc(v.ui) + '</span></a></li>').join('') + '</ul></article>').join('') + '</div>';
+}
+function pillHtml(sc, s){ const d = sc.done(s), N = s.count;
+  const cls = d === N ? 'false' : 'true';
+  return '<span class="state-pill ' + cls + '" id="condPill">' + (d === N ? 'Loop complete' : d > N ? 'Too many iterations' : 'Loop running: ' + (N - d) + ' to go') + '</span>'; }
+function resultHtml(sc, s){ const d = sc.done(s), N = s.count;
+  return '<p class="notice" style="margin-bottom:8px">Iterations done: <strong id="iterations-done" data-testid="iterations-done">' + d + '</strong> of <strong id="iterations-expected">' + N + '</strong></p>' +
+    (d === N ? OK('loop-complete', 'All ' + N + ' iterations done') : d > N ? ERR('too-many-iterations', 'Too many iterations: ' + d + ' of ' + N) : ''); }
+function logHtml(s){ return s.log.length ? s.log.map((t, i) => '<li><span class="n">' + (i + 1) + '</span><span>' + esc(t) + '</span></li>').join('') : '<li><span class="notice">Nothing yet. Actions appear here as your loop runs.</span></li>'; }
+
+function renderScenario(sc){
+  renderNav(sc);
+  document.title = sc.ex + ' – For loop practice page';
+  const s = getState(sc);
+  $('#view').innerHTML =
+    '<section class="sc-head"><h2>' + esc(sc.group.title) + ': ' + esc(sc.ex) + '</h2>' +
+    '<p style="margin:8px 0 0">' + sc.about + '</p>' +
+    '<div class="siblings">' + sc.group.variants.map(v => '<a href="#' + v.key + '"' + (v === sc ? ' aria-current="page"' : '') + '>' + v.num + '. ' + esc(v.ex) + ' (' + esc(v.ui) + ')</a>').join('') + '</div>' +
+    '<div class="setup"><label>Number of iterations (N)<input type="number" id="countInput" min="1" max="50" value="' + s.count + '"></label>' +
+      '<button class="btn" type="button" id="resetBtn">Reset scenario</button></div></section>' +
+    '<div class="grid2">' +
+      '<section class="box" aria-label="Test area"><div class="box-head"><h3>Test area</h3>' + pillHtml(sc, s) + '</div>' +
+        '<div class="stage" id="stage">' + sc.render(s) + '</div><div class="result-area" id="result">' + resultHtml(sc, s) + '</div></section>' +
+      '<section class="box" aria-label="Iteration log"><div class="box-head"><h3>Iteration log</h3></div><ol class="log" id="log">' + logHtml(s) + '</ol></section>' +
+    '</div>';
+}
+function refreshStage(sc){
+  const s = getState(sc);
+  const activeId = document.activeElement && document.activeElement.id;
+  $('#stage').innerHTML = sc.render(s);
+  $('#result').innerHTML = resultHtml(sc, s);
+  $('#log').innerHTML = logHtml(s);
+  $('#log').scrollTop = $('#log').scrollHeight;
+  $('#condPill').outerHTML = pillHtml(sc, s);
+  if(activeId){ const el = $('#stage').querySelector('#' + CSS.escape(activeId)); if(el) el.focus(); }
+}
+const current = () => SC.find(x => x.key === location.hash.slice(1));
+function route(){ const sc = current(); sc ? renderScenario(sc) : renderOverview(); window.scrollTo(0, 0); }
+
+/* ---------- Events ---------- */
+window.addEventListener('hashchange', route);
+$('#view').addEventListener('click', e => {
+  const sc = current(); if(!sc) return;
+  const s = getState(sc);
+  const el = e.target.closest('[data-do]');
+  if(el && !el.disabled && $('#stage').contains(el)){ const fn = sc.act[el.dataset.do]; if(fn){ fn(s, el); refreshStage(sc); } return; }
+  if(e.target.id === 'resetBtn'){ resetState(sc); renderScenario(sc); toast('Scenario reset'); }
+});
+$('#view').addEventListener('change', e => {
+  const sc = current(); if(!sc) return;
+  const s = getState(sc);
+  if(e.target.dataset.change){ sc.act[e.target.dataset.change](s, e.target); refreshStage(sc); return; }
+  if(e.target.id === 'countInput'){ const v = parseInt(e.target.value, 10); s.count = isNaN(v) ? 1 : Math.min(Math.max(v, 1), 50); resetState(sc); renderScenario(sc); $('#countInput').focus(); }
+});
+$('#view').addEventListener('input', e => {
+  const sc = current(); if(!sc) return;
+  if(e.target.dataset.bind) getState(sc)[e.target.dataset.bind] = e.target.value;
+});
+$('#view').addEventListener('keydown', e => {
+  const sc = current(); if(!sc) return;
+  const k = e.target.dataset && e.target.dataset.keydo;
+  if(k && (e.key === 'ArrowUp' || e.key === 'ArrowDown')){ e.preventDefault(); sc.act[k](getState(sc), e.target, e.key); refreshStage(sc); }
+});
+route();
+
+</script>
+</body>
+</html>

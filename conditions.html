@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conditions practice page</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EDF0F4; --surface:#FFFFFF; --surface-2:#F5F7FA; --ink:#18243A; --muted:#5B6880; --line:#D5DCE6;
+  --accent:#2952D9; --accent-ink:#FFFFFF; --accent-soft:#E4EAFC; --accent-strong:#1F3FAE;
+  --loop:#D08A12; --loop-soft:#FCF1DC; --loop-ink:#8A5A06;
+  --ok:#23845A; --ok-soft:#E1F3EA; --bad:#C23B32; --bad-soft:#FBE7E5; --stage:#FAFBFD;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10151F; --surface:#182030; --surface-2:#1E2738; --ink:#E6EBF3; --muted:#98A3B8; --line:#2C374B;
+    --accent:#7393FF; --accent-ink:#0D1426; --accent-soft:#22305A; --accent-strong:#B5C6FF;
+    --loop:#F0B04A; --loop-soft:#2E2614; --loop-ink:#F5C77A;
+    --ok:#4CC38A; --ok-soft:#173326; --bad:#F07167; --bad-soft:#3A1C1A; --stage:#141B28;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10151F; --surface:#182030; --surface-2:#1E2738; --ink:#E6EBF3; --muted:#98A3B8; --line:#2C374B;
+  --accent:#7393FF; --accent-ink:#0D1426; --accent-soft:#22305A; --accent-strong:#B5C6FF;
+  --loop:#F0B04A; --loop-soft:#2E2614; --loop-ink:#F5C77A;
+  --ok:#4CC38A; --ok-soft:#173326; --bad:#F07167; --bad-soft:#3A1C1A; --stage:#141B28;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 "IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.mono{font-family:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace}
+button{font:inherit}
+h1,h2,h3{margin:0}
+a{color:var(--accent)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 28px;background:var(--surface);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.top h1{font-size:1.3rem;font-weight:700}
+.top p{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.top-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+
+.layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:20px;padding:20px 28px 40px;max-width:1500px;margin:0 auto;align-items:start}
+.nav{position:sticky;top:20px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;max-height:calc(100vh - 40px);overflow:auto}
+.nav a{display:block;padding:5px 10px;border-radius:7px;text-decoration:none;color:var(--ink);font-size:.88rem}
+.nav a:hover{background:var(--surface-2)}
+.nav a[aria-current="page"]{background:var(--accent-soft);color:var(--accent-strong);font-weight:600}
+.nav .ngroup{margin-top:10px;padding:0 10px 2px;font-size:.78rem;font-weight:600;color:var(--muted)}
+.nav .ngroup span{font-weight:400}
+.nav .sub{padding-left:20px}
+
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:8px 14px;border-radius:7px;font-weight:500;cursor:pointer;text-decoration:none;display:inline-block}
+.btn:hover{background:var(--surface-2)}
+
+/* Overview */
+.intro{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;margin-bottom:16px}
+.intro h2{font-size:1.1rem;margin-bottom:6px}
+.intro p{margin:0 0 8px;max-width:75ch}
+.intro p:last-child{margin-bottom:0}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.card h3{font-size:1rem}
+.card .tpl{font-size:.78rem;color:var(--muted);margin:2px 0 10px}
+.card ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.card li a{display:flex;justify-content:space-between;gap:8px;padding:7px 10px;border:1px solid var(--line);border-radius:7px;text-decoration:none;color:var(--ink);font-size:.9rem}
+.card li a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.ui-tag{font-size:.74rem;color:var(--muted);white-space:nowrap}
+
+/* Scenario view */
+.sc-head{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;margin-bottom:16px}
+.sc-head h2{font-size:1.2rem}
+.sc-head .tpl{margin:4px 0 0;color:var(--muted);font-size:.85rem}
+.siblings{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.siblings a{font-size:.82rem;padding:4px 10px;border-radius:999px;border:1px solid var(--line);text-decoration:none;color:var(--ink)}
+.siblings a[aria-current="page"]{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-strong);font-weight:600}
+.setup{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-top:14px;padding-top:14px;border-top:1px solid var(--line)}
+.setup label{display:flex;flex-direction:column;gap:4px;font-size:.84rem;font-weight:500}
+.setup input[type=number]{width:120px;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:7px 10px}
+.setup .check{flex-direction:row;align-items:center;gap:8px;padding-bottom:8px}
+.setup .check input{width:18px;height:18px;accent-color:var(--accent)}
+
+.grid2{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:16px;align-items:start}
+.box{background:var(--surface);border:1px solid var(--line);border-radius:10px}
+.box-head{padding:12px 16px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.box-head h3{font-size:.95rem;font-weight:600}
+.state-pill{font-size:.78rem;font-weight:600;padding:3px 10px;border-radius:999px}
+.state-pill.true{background:var(--loop-soft);color:var(--loop-ink)}
+.state-pill.false{background:var(--ok-soft);color:var(--ok)}
+.stage{background:var(--stage);padding:20px;min-height:240px}
+.meter{display:flex;gap:16px;flex-wrap:wrap;padding:10px 16px;border-top:1px solid var(--line);font-size:.84rem;color:var(--muted)}
+.meter strong{color:var(--ink)}
+
+/* Elements under test */
+.t-btn{border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);padding:9px 16px;border-radius:7px;font-weight:600;cursor:pointer}
+.t-btn:hover{filter:brightness(1.07)}
+.t-btn.secondary{background:var(--surface);color:var(--accent)}
+.t-btn:disabled{background:var(--surface-2);border-color:var(--line);color:var(--muted);cursor:not-allowed;filter:none}
+.t-btn.danger{background:var(--surface);color:var(--bad);border-color:var(--bad);padding:5px 12px}
+.t-btn.danger:hover{background:var(--bad-soft)}
+.row{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap}
+.stack{display:flex;flex-direction:column;gap:12px}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.list li{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 12px}
+.products{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:8px}
+.product{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;font-size:.88rem;text-align:center}
+.indicator{font-weight:600;margin:0}
+.success{background:var(--ok-soft);color:var(--ok);border:1px solid var(--ok);border-radius:8px;padding:10px 14px;font-weight:600;margin:0}
+.notice{color:var(--muted);margin:0;font-size:.9rem}
+.flash{background:var(--bad-soft);color:var(--bad);border:1px solid var(--bad);border-radius:8px;padding:8px 12px;margin:0;font-size:.9rem;font-weight:500}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-weight:600;font-size:.85rem}
+.badge.pending{background:var(--loop-soft);color:var(--loop-ink)}
+.badge.done{background:var(--ok-soft);color:var(--ok)}
+.field{display:flex;flex-direction:column;gap:4px;max-width:260px;flex:1;min-width:160px}
+.field label{font-size:.85rem;font-weight:500}
+.field input{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+.field input[readonly]{background:var(--surface-2)}
+.checks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.checks label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.checks input{width:18px;height:18px;accent-color:var(--ok)}
+.steps-bar{display:flex;gap:6px;flex-wrap:wrap}
+.steps-bar span{padding:4px 10px;border-radius:999px;border:1px solid var(--line);font-size:.82rem;color:var(--muted)}
+.steps-bar span.on{border-color:var(--accent);color:var(--accent-strong);background:var(--accent-soft);font-weight:600}
+.status-chip{display:inline-block;background:var(--loop-soft);color:var(--loop-ink);border-radius:6px;padding:4px 10px;font-weight:600;margin:0;align-self:flex-start}
+.tbl-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.88rem;background:var(--surface)}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line)}
+th{font-weight:600;color:var(--muted);font-size:.8rem}
+.dialog-backdrop{position:relative;border-radius:10px;padding:18px;background:rgba(24,36,58,.35)}
+.dialog{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;max-width:340px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.dialog h3{font-size:1rem;margin-bottom:4px}
+.dialog p{margin:0 0 12px;font-size:.9rem}
+.slide{height:130px;border-radius:10px;display:grid;place-items:center;font-weight:700;font-size:1.2rem;color:#fff}
+.progress{height:14px;background:var(--surface-2);border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.progress span{display:block;height:100%;background:var(--accent);transition:width .2s}
+.timer{font-size:1.6rem;font-weight:700;margin:0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips span{background:var(--accent-soft);color:var(--accent-strong);border-radius:999px;padding:2px 10px;font-size:.84rem;font-weight:500}
+fieldset{border:1px solid var(--line);border-radius:8px;padding:10px 14px;margin:0;background:var(--surface)}
+legend{font-weight:600;padding:0 4px}
+.radio{display:flex;gap:8px;align-items:center;padding:4px 0;cursor:pointer}
+.radio input{width:17px;height:17px;accent-color:var(--accent)}
+.skeleton{height:12px;border-radius:6px;background:var(--line);margin:6px 0;max-width:320px}
+.download{display:inline-block;font-weight:600}
+
+/* Steps panel (unused) */
+.cq{padding:14px 16px}
+.cq h4{font-size:.8rem;color:var(--muted);font-weight:600;margin:12px 0 4px}
+.cq h4:first-child{margin-top:0}
+.cq ol{margin:0;padding-left:20px;font-size:.84rem}
+.cq li{margin:3px 0;overflow-wrap:anywhere}
+.cq .cond{border:1px solid var(--loop);border-left-width:5px;background:var(--loop-soft);border-radius:7px;padding:8px 10px;font-size:.84rem;font-weight:500}
+.cq .inside{border-left:3px solid var(--loop);margin-left:8px;padding-left:12px}
+.cq .tip{font-size:.8rem;color:var(--muted);margin:10px 0 0}
+.cq code{font-size:.78rem;background:var(--surface-2);border:1px solid var(--line);border-radius:4px;padding:0 4px}
+.copy-row{padding:0 16px 14px}
+/* Text written by ::before is not page text, so instructions never satisfy a page-text check */
+.ref::before{content:"\201C" attr(data-text) "\201D";font-weight:600}
+
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:10}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+@media (max-width:1050px){ .grid2{grid-template-columns:1fr} }
+@media (max-width:780px){
+  .layout{grid-template-columns:1fr;padding:14px}
+  .nav{position:static;max-height:260px}
+  .top{padding:14px}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important} }
+
+.pages{display:flex;gap:4px;flex-wrap:wrap;background:var(--surface-2);border:1px solid var(--line);border-radius:9px;padding:3px}
+.pages a{padding:6px 12px;border-radius:7px;text-decoration:none;color:var(--muted);font-weight:500;font-size:.9rem}
+.pages a:hover{color:var(--ink)}
+.pages a[aria-current="page"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:8px;padding:3px;background:var(--surface-2)}
+.seg button{border:0;background:none;padding:6px 14px;border-radius:6px;color:var(--muted);cursor:pointer;font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+.setup .seg-wrap{display:flex;flex-direction:column;gap:4px;font-size:.84rem;font-weight:500}
+.meter .good{color:var(--ok)} .meter .bad{color:var(--bad)}
+.banner{background:var(--loop-soft);border:1px solid var(--loop);border-radius:8px;padding:12px 14px;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.card-ui{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px}
+.card-ui h3{font-size:1rem;margin-bottom:4px}
+.fixed-card{background:#FFFFFF;color:#222222;border:1px solid #D5DCE6;border-radius:10px;padding:14px}
+.switch-row{display:flex;align-items:center;gap:12px}
+.switch{width:50px;height:28px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);position:relative;cursor:pointer;padding:0}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--muted);transition:left .15s}
+.switch[aria-checked="true"]{background:var(--accent);border-color:var(--accent)}
+.switch[aria-checked="true"]::after{left:25px;background:var(--accent-ink)}
+.tabs-ui{display:flex;gap:4px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.tabs-ui .tab{border:0;background:none;padding:8px 14px;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;font-weight:500}
+.tabs-ui .tab.active{color:var(--ink);border-bottom-color:var(--accent)}
+.tab-panel{padding:12px 2px}
+.stars{font-size:1.4rem;letter-spacing:2px;color:var(--loop)}
+.stars .off{color:var(--line)}
+textarea{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;min-height:80px;width:100%;max-width:420px}
+select{font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+tr.highlight td{background:var(--loop-soft)}
+.acc{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface)}
+.acc + .acc{margin-top:6px}
+.acc button{width:100%;text-align:left;border:0;background:none;padding:10px 12px;font-weight:600;cursor:pointer;color:var(--ink)}
+.acc .acc-body{padding:0 12px 10px;font-size:.9rem;color:var(--muted)}
+.log{list-style:none;margin:0;padding:12px 16px;font-size:.84rem;max-height:420px;overflow:auto}
+.log li{padding:4px 0;border-bottom:1px solid var(--line);display:flex;gap:8px}
+.log li:last-child{border-bottom:0}
+.log .n{color:var(--muted);min-width:22px;text-align:right}
+.data-table caption{text-align:left;font-weight:600;padding:0 0 6px;font-size:.85rem}
+.mark-ok{color:var(--ok);font-weight:700}.mark-bad{color:var(--bad);font-weight:700}
+.result-area{padding:12px 16px;border-top:1px solid var(--line)}
+.hint-card{border:1px dashed var(--line);border-radius:8px;padding:8px 12px;font-size:.85rem;color:var(--muted)}
+</style>
+</head>
+<body>
+<header class="top">
+  <div>
+    <h1>Conditions practice page</h1>
+    <p>42 live scenarios, 2 for every If template. Make the condition true or false and check that your test runs or skips the If block.</p>
+  </div>
+  <div class="top-actions">
+    <nav class="pages" aria-label="Pages"><a href="playground.html">While loops</a><a href="for-loops.html">For loops</a><a href="conditions.html" aria-current="page">Conditions</a><a href="index.html">Test builder</a></nav>
+    <button class="btn" id="themeBtn" type="button">Dark mode</button>
+  </div>
+</header>
+<div class="layout">
+  <nav class="nav" id="nav" aria-label="Scenarios"></nav>
+  <main id="view"></main>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<script>
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const R = t => '<span class="ref" data-text="' + esc(t) + '"></span>';
+const $ = s => document.querySelector(s);
+const B = (id, text, act, o = {}) => '<button type="button" class="t-btn ' + (o.cls || '') + '"' + (o.multi ? '' : ' id="' + id + '"') +
+  ' data-testid="' + id + '" data-do="' + act + '"' + (o.i !== undefined ? ' data-i="' + o.i + '"' : '') + (o.disabled ? ' disabled' : '') +
+  (o.aria ? ' aria-label="' + esc(o.aria) + '"' : '') + (o.attrs || '') + '>' + esc(text) + '</button>';
+const IN = (id, label, value, o = {}) => '<div class="field"><label for="' + id + '">' + esc(label) + '</label><input id="' + id + '" data-testid="' + id + '" name="' + id + '"' +
+  ' type="' + (o.type || 'text') + '" value="' + esc(value) + '"' + (o.ro ? ' readonly' : '') + (o.disabled ? ' disabled' : '') + (o.bind ? ' data-bind="' + o.bind + '"' : '') +
+  (o.ph ? ' placeholder="' + esc(o.ph) + '"' : '') + (o.attrs || '') + ' autocomplete="off"></div>';
+const OK = (id, text) => '<p class="success" id="' + id + '" data-testid="' + id + '">' + esc(text) + '</p>';
+const ERR = (id, text) => '<p class="flash" id="' + id + '" data-testid="' + id + '">' + esc(text) + '</p>';
+const NOTE = t => '<p class="notice">' + t + '</p>';
+const ROW = (...x) => '<div class="row">' + x.join('') + '</div>';
+const STACK = (...x) => '<div class="stack">' + x.join('') + '</div>';
+function toast(text){
+  const t = $('#toast'); t.textContent = text; t.classList.add('show');
+  clearTimeout(toast._t); toast._t = setTimeout(() => t.classList.remove('show'), 2000);
+}
+function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
+function isDark(){ const t = document.documentElement.dataset.theme; return t ? t === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches; }
+function syncTheme(){ $('#themeBtn').textContent = isDark() ? 'Light mode' : 'Dark mode'; }
+(function(){
+  const th = store('whileLoopBuilder.theme');
+  if(th === 'dark' || th === 'light') document.documentElement.dataset.theme = th;
+  $('#themeBtn').addEventListener('click', () => { const n = isDark() ? 'light' : 'dark'; document.documentElement.dataset.theme = n; store('whileLoopBuilder.theme', n); syncTheme(); });
+  syncTheme();
+})();
+
+const DONE = (s, t) => s.done ? OK('if-result', t) : '';
+const BOX = (inner) => '<div class="card-ui">' + inner + '</div>';
+
+const TEMPLATES = [
+{ id:564, name:'waitUntilTextIsDisplayedIF', title:'Text is present (text in element field)', template:'Check the text #{label} is present on the current page', variants:[
+  { ex:'Sale banner', ui:'Banner', about:'If the ' + R('Flash sale') + ' text is on the page, open the sale.',
+    render:s => STACK(s.on ? '<div class="banner" id="sale-banner"><span><strong>Flash sale</strong> on all lamps today</span>' + B('shop-sale-button', 'Shop the sale', 'run') + '</div>' : NOTE('Regular prices today.'),
+      '<div class="products"><div class="product">Desk lamp</div><div class="product">Floor lamp</div><div class="product">Wall lamp</div></div>', DONE(s, 'Sale page opened')) },
+  { ex:'Email check', ui:'Input + error', about:'If the ' + R('Email already used') + ' error shows, clear the email so a new one can be typed.',
+    render:s => STACK(IN('email-field', 'Email', s.done ? '' : 'demo@example.com', {ro:true}),
+      s.on && !s.done ? ERR('email-error', 'Email already used') + ROW(B('use-another-email-button', 'Use another email', 'run', {cls:'secondary'})) : NOTE(s.done ? '' : 'This email can be used.'),
+      DONE(s, 'Email cleared. Type a new one.')) }
+]},
+{ id:676, name:'verifyTextPresentIf', title:'Page shows text', template:'Check that the current page displays text #{test-data}', variants:[
+  { ex:'Login message', ui:'Text + button', about:'If the page greets a returning user with ' + R('Welcome back') + ', open the dashboard.',
+    render:s => STACK(s.on ? '<p class="indicator" id="login-message">Welcome back, Demo user</p>' + ROW(B('go-to-dashboard-button', 'Go to dashboard', 'run'))
+      : '<p class="indicator" id="login-message">Please sign in to continue</p>', DONE(s, 'Dashboard opened')) },
+  { ex:'Search results', ui:'Input + table', about:'If the search shows ' + R('No results found') + ', clear the filters.',
+    render:s => STACK(IN('search-field', 'Search', s.on && !s.done ? 'zzz' : 'lamp', {ro:true}),
+      s.on && !s.done ? ERR('no-results', 'No results found') + ROW(B('clear-filters-button', 'Clear filters', 'run', {cls:'secondary'}))
+        : '<div class="tbl-wrap"><table><thead><tr><th>Product</th><th>Price</th></tr></thead><tbody><tr><td>Desk lamp</td><td>$24</td></tr><tr><td>Floor lamp</td><td>$60</td></tr></tbody></table></div>',
+      DONE(s, 'Filters cleared')) }
+]},
+{ id:677, name:'verifyTextAbsentIf', title:'Page does not show text', template:'Check that the current page does not display text #{test-data}', variants:[
+  { ex:'Product stock', ui:'Product card', about:'If the page does not say ' + R('Out of stock') + ', buy the product.',
+    render:s => STACK(BOX('<h3>Desk lamp</h3><p class="indicator">$24.00</p>' + (s.on ? NOTE('Ships tomorrow') + ROW(B('buy-now-button', 'Buy now', 'run')) : ERR('stock-status', 'Out of stock'))),
+      DONE(s, 'Added to your order')) },
+  { ex:'Draft editor', ui:'Text area', about:'If the page does not show ' + R('Session expired') + ', save the draft.',
+    render:s => STACK('<label for="draft-text" style="font-weight:500;font-size:.85rem">Draft</label><textarea id="draft-text" data-testid="draft-text">Meeting notes for Monday</textarea>',
+      s.on ? ROW(B('save-draft-button', 'Save draft', 'run')) : ERR('session-error', 'Session expired'), DONE(s, 'Draft saved')) }
+]},
+{ id:678, name:'verifyCurrentURLIf', title:'Page URL is', template:'Check that the URL of current page is #{test-data}', variants:[
+  { ex:'Promo address', ui:'Address bar', urlParam:['view', 'sale'], about:'If the page address ends with <code>?view=sale</code> before the <code>#</code>, apply the sale price. Use the full address of this scenario as the value.',
+    render:s => STACK(NOTE('This scenario changes the address bar when you switch the condition.'), s.on ? '<p class="indicator" id="view-label">Sale view</p>' + ROW(B('apply-sale-price-button', 'Apply sale price', 'run'))
+      : '<p class="indicator" id="view-label">Normal view</p>', DONE(s, 'Sale price applied')) },
+  { ex:'Language address', ui:'Address bar', urlParam:['lang', 'fr'], about:'If the page address has <code>?lang=fr</code>, switch the page to English. Use the full address of this scenario as the value.',
+    render:s => STACK(s.on && !s.done ? '<p class="indicator" id="greeting" lang="fr">Bonjour et bienvenue !</p>' + ROW(B('switch-to-english-button', 'Switch to English', 'run'))
+      : '<p class="indicator" id="greeting">Hello and welcome!</p>', DONE(s, 'Language switched to English')) }
+]},
+{ id:679, name:'verifyTitleContainsIf', title:'Page title contains', template:'Check that the current page title contains #{test-data}', variants:[
+  { ex:'Cart title', ui:'Browser tab title', pageTitle:s => s.on ? 'Cart (2 items) – Shop' : 'Cart is empty – Shop',
+    about:'If the browser tab title contains <code>2 items</code>, start checkout.',
+    render:s => STACK(NOTE('Browser tab title: <strong id="title-preview">' + esc(s.on ? 'Cart (2 items) – Shop' : 'Cart is empty – Shop') + '</strong>'),
+      s.on ? '<ul class="list"><li>Desk lamp<span>$24</span></li><li>Bulb pack<span>$9</span></li></ul>' + ROW(B('checkout-button', 'Checkout', 'run')) : NOTE('Your cart is empty.'), DONE(s, 'Checkout started')) },
+  { ex:'Inbox title', ui:'Browser tab title', pageTitle:s => s.on && !s.done ? 'Inbox (3 new) – Mail' : 'Inbox – Mail',
+    about:'If the browser tab title contains <code>new</code>, mark all messages as read.',
+    render:s => STACK(NOTE('Browser tab title: <strong id="title-preview">' + esc(s.on && !s.done ? 'Inbox (3 new) – Mail' : 'Inbox – Mail') + '</strong>'),
+      s.on && !s.done ? ROW(B('mark-all-read-button', 'Mark all read', 'run')) : '', DONE(s, 'All messages marked as read')) }
+]},
+{ id:680, name:'verifyTextContainsIf', title:'Element text contains', template:'Check that the #{label} text contains #{test-data}', variants:[
+  { ex:'Delivery status', ui:'Badge', about:'If the delivery status contains <code>Delayed</code>, contact support.',
+    render:s => STACK('<p>Delivery: <span class="badge ' + (s.on ? 'pending' : 'done') + '" id="delivery-status" data-testid="delivery-status">' + (s.on ? 'Delayed by 2 days' : 'On time') + '</span></p>',
+      ROW(B('contact-support-button', 'Contact support', 'run', {cls:'secondary'})), DONE(s, 'Support request sent')) },
+  { ex:'Shipping estimate', ui:'Text block', about:'If the shipping estimate contains <code>Free</code>, choose free shipping.',
+    render:s => STACK(BOX('<p style="margin:0" id="shipping-estimate" data-testid="shipping-estimate">' + (s.on ? 'Free delivery on Friday' : 'Delivery costs $4.99') + '</p>'),
+      ROW(B('choose-free-shipping-button', 'Choose free shipping', 'run')), DONE(s, 'Free shipping chosen')) }
+]},
+{ id:681, name:'verifyTextIf', title:'Element shows exact text', template:'Check that the #{label} displays text #{test-data}', variants:[
+  { ex:'Greeting', ui:'Text + button', about:'If the greeting says exactly <code>Hello, Guest</code>, open sign in.',
+    render:s => STACK('<p class="indicator" id="greeting-text" data-testid="greeting-text">' + (s.on ? 'Hello, Guest' : 'Hello, Demo user') + '</p>',
+      ROW(B('sign-in-button', 'Sign in', 'run')), DONE(s, 'Sign-in page opened')) },
+  { ex:'Follow button', ui:'Toggle button', about:'If the button says exactly <code>Follow</code>, click it to follow the page.',
+    render:s => STACK(BOX('<h3>Lamp makers club</h3>' + NOTE('1,204 followers')), ROW(B('follow-button', s.on && !s.done ? 'Follow' : 'Following', 'run', {cls:s.on && !s.done ? '' : 'secondary'})),
+      DONE(s, 'You now follow this page')) }
+]},
+{ id:682, name:'verifyElementVisibleIf', title:'Element is visible', template:'Check that the #{label} is visible', variants:[
+  { ex:'Cookie banner', ui:'Banner', about:'If the cookie banner is visible, accept cookies.',
+    render:s => STACK(s.on && !s.done ? '<div class="banner" id="cookie-banner" data-testid="cookie-banner" role="region" aria-label="Cookie banner"><span>We use cookies to improve the shop.</span>' + B('accept-cookies-button', 'Accept cookies', 'run') + '</div>' : '',
+      BOX('<h3>Home</h3>' + NOTE('Page content.')), DONE(s, 'Cookies accepted')) },
+  { ex:'Chat widget', ui:'Popup', about:'If the chat popup is visible, close it.',
+    render:s => STACK(BOX('<h3>Help centre</h3>' + NOTE('Search our guides or ask us a question.')),
+      s.on && !s.done ? '<div class="dialog-backdrop"><div class="dialog" role="dialog" aria-label="Chat" id="chat-widget" data-testid="chat-widget"><h3>Chat with us</h3><p>Hi! Need help with your order?</p>' + B('close-chat-button', 'Close chat', 'run', {cls:'secondary'}) + '</div></div>' : '',
+      DONE(s, 'Chat closed')) }
+]},
+{ id:683, name:'verifyElementNotVisibleIf', title:'Element is not visible', template:'Check that the #{label} is not visible', variants:[
+  { ex:'Order form', ui:'Form + alert', about:'If no error alert is visible, submit the order.',
+    render:s => STACK(ROW(IN('card-field', 'Card number', '4242 4242 4242 4242', {ro:true})), s.on ? '' : ERR('error-alert', 'Payment failed. Check your card.'),
+      ROW(B('submit-order-button', 'Submit order', 'run')), DONE(s, 'Order submitted')) },
+  { ex:'Report download', ui:'Spinner', about:'If the loading spinner is not visible, download the report.',
+    render:s => STACK(BOX('<h3>Monthly report</h3>' + NOTE('March 2026')), s.on ? '' : '<p class="status-chip" id="loading-spinner" data-testid="loading-spinner" role="status">⟳ Preparing the report</p>',
+      ROW(B('download-report-button', 'Download report', 'run')), DONE(s, 'Report downloaded')) }
+]},
+{ id:684, name:'verifyElementEnabledIf', title:'Element is enabled', template:'Check that the #{label} is enabled', variants:[
+  { ex:'Coupon button', ui:'Button', about:'If the Apply coupon button is enabled, click it.',
+    render:s => STACK(ROW(IN('coupon-field', 'Coupon', 'SAVE10', {ro:true}), B('apply-coupon-button', 'Apply coupon', 'run', {disabled:!s.on})), s.on ? '' : NOTE('Coupons are paused today.'), DONE(s, 'Coupon applied')) },
+  { ex:'Promo field', ui:'Input', about:'If the Promo code field is enabled, type a code and apply it.',
+    init:s => { s.promo = ''; },
+    render:s => STACK(ROW(IN('promo-code-field', 'Promo code', s.promo, {disabled:!s.on, bind:'promo', ph:'e.g. WELCOME'}), B('apply-promo-button', 'Apply promo', 'run', {disabled:!s.on})),
+      s.on ? '' : NOTE('Promo codes are not available for this order.'), DONE(s, 'Promo applied')) }
+]},
+{ id:685, name:'verifyElementDisabledIf', title:'Element is disabled', template:'Check that the #{label} is disabled', variants:[
+  { ex:'Pay button', ui:'Checkbox + button', about:'If the Pay now button is disabled, tick the terms checkbox to turn it on.',
+    init:s => { s.terms = !s.on; },
+    render:s => STACK('<ul class="checks"><li><label><input type="checkbox" id="accept-terms-checkbox" data-testid="accept-terms-checkbox" data-do="run"' + (s.terms ? ' checked' : '') + '> I accept the terms</label></li></ul>',
+      ROW(B('pay-now-button', 'Pay now', 'pay', {disabled:!s.terms})), DONE(s, 'Terms accepted'), s.paid ? OK('payment-done', 'Payment complete') : ''),
+    act:{ run:s => { s.terms = !s.terms; if(s.terms) s.done = true; }, pay:s => { s.paid = true; } } },
+  { ex:'Locked email', ui:'Input', about:'If the Email field is disabled, click Edit email to unlock it.',
+    render:s => STACK(ROW(IN('locked-email-field', 'Email', 'demo@example.com', {disabled:s.on && !s.done}), B('edit-email-button', 'Edit email', 'run', {cls:'secondary'})), DONE(s, 'Email field unlocked')) }
+]},
+{ id:686, name:'verifyValueIf', title:'Input has value', template:'Check that the #{label} inputbox has value #{test-data}', variants:[
+  { ex:'Country field', ui:'Input', about:'If the Country field has the value <code>India</code>, show the GST field.',
+    render:s => STACK(IN('country-field', 'Country', s.on ? 'India' : 'Japan', {ro:true}), ROW(B('show-gst-field-button', 'Show GST field', 'run', {cls:'secondary'})),
+      s.done ? IN('gst-field', 'GST number', '', {ph:'22AAAAA0000A1Z5'}) : '', DONE(s, 'GST field shown')) },
+  { ex:'Quantity zero', ui:'Input', about:'If the Quantity field has the value <code>0</code>, remove the item.',
+    render:s => STACK(BOX('<h3>Desk lamp</h3>' + IN('cart-quantity-field', 'Quantity', s.on ? '0' : '2', {ro:true})), ROW(B('remove-item-button', 'Remove item', 'run', {cls:'danger'})), DONE(s, 'Item removed from cart')) }
+]},
+{ id:687, name:'verifyValueNotEqualIf', title:'Input does not have value', template:'Check that the #{label} inputbox does not have value #{test-data}', variants:[
+  { ex:'Profile name', ui:'Input', about:'If the Name field does not have the value <code>Guest</code>, save the profile.',
+    render:s => STACK(IN('name-field', 'Name', s.on ? 'Asha Patel' : 'Guest', {ro:true}), ROW(B('save-profile-button', 'Save profile', 'run')), DONE(s, 'Profile saved')) },
+  { ex:'Currency', ui:'Input', about:'If the Currency field does not have the value <code>USD</code>, convert the prices to USD.',
+    render:s => STACK(IN('currency-field', 'Currency', s.on && !s.done ? 'EUR' : 'USD', {ro:true}), ROW(B('convert-to-usd-button', 'Convert to USD', 'run', {cls:'secondary'})), DONE(s, 'Prices converted to USD')) }
+]},
+{ id:688, name:'verifyValueEmptyIf', title:'Input is empty', template:'Check that the #{label} has an empty value', variants:[
+  { ex:'Search box', ui:'Input', about:'If the Search field is empty, show popular searches.',
+    render:s => STACK(IN('search-box-field', 'Search', s.on ? '' : 'lamp', {ro:true}), ROW(B('show-popular-searches-button', 'Show popular searches', 'run', {cls:'secondary'})),
+      s.done ? '<div class="chips" id="popular-searches"><span>desk lamp</span><span>bulbs</span><span>lamp shade</span></div>' : '', DONE(s, 'Popular searches shown')) },
+  { ex:'Phone field', ui:'Input', about:'If the Phone field is empty, fill in the saved phone number.',
+    render:s => STACK(IN('phone-field', 'Phone', s.on && !s.done ? '' : '9876543210', {ro:true}), ROW(B('use-saved-phone-button', 'Use saved phone', 'run', {cls:'secondary'})), DONE(s, 'Saved phone filled in')) }
+]},
+{ id:689, name:'verifyValueNotEmptyIf', title:'Input is not empty', template:'Check that the #{label} has non-empty value', variants:[
+  { ex:'Delivery notes', ui:'Input', about:'If the Notes field has text, save the notes.',
+    render:s => STACK(IN('notes-field', 'Delivery notes', s.on ? 'Call before delivery' : '', {ro:true}), ROW(B('save-notes-button', 'Save notes', 'run')), DONE(s, 'Notes saved')) },
+  { ex:'Promo code filled', ui:'Input', about:'If the Promo code field is not empty, apply the code.',
+    render:s => STACK(IN('filled-promo-field', 'Promo code', s.on ? 'SPRING20' : '', {ro:true}), ROW(B('apply-code-button', 'Apply code', 'run')), DONE(s, 'Code applied')) }
+]},
+{ id:690, name:'verifyAttributeIf', title:'Attribute has value', template:'Check that the #{label} has value #{test-data} for #{attribute}', variants:[
+  { ex:'Toggle switch', ui:'Switch', about:'If the Notifications switch has <code>aria-checked</code> set to <code>true</code>, click it to turn notifications off.',
+    render:s => STACK('<div class="switch-row"><button type="button" class="switch" role="switch" id="notifications-switch" data-testid="notifications-switch" data-do="run" aria-checked="' + (s.on && !s.done) + '" aria-label="Email notifications"></button><span>Email notifications</span></div>',
+      DONE(s, 'Notifications turned off')) },
+  { ex:'Profile photo', ui:'Image', about:'If the profile image has <code>alt</code> set to <code>Placeholder</code>, upload a photo.',
+    render:s => STACK('<img id="profile-photo" data-testid="profile-photo" width="72" height="72" style="border-radius:50%;border:1px solid var(--line)" alt="' + (s.on && !s.done ? 'Placeholder' : 'Profile photo of Demo user') + '" src="data:image/svg+xml,' +
+        encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 72 72"><rect width="72" height="72" fill="' + (s.on && !s.done ? '#C9D1DD' : '#2952D9') + '"/><circle cx="36" cy="28" r="13" fill="#fff"/><rect x="14" y="46" width="44" height="20" rx="10" fill="#fff"/></svg>') + '">',
+      ROW(B('upload-photo-button', 'Upload photo', 'run', {cls:'secondary'})), DONE(s, 'Photo uploaded')) }
+]},
+{ id:691, name:'verifyAttributeContainsIf', title:'Attribute contains', template:'Check that the #{label} contains value #{test-data} for #{attribute}', variants:[
+  { ex:'Offer link', ui:'Link', about:'If the offer link’s <code>href</code> contains <code>sale</code>, click the link.',
+    render:s => STACK(BOX('<a id="offer-link" data-testid="offer-link" data-do="run" href="' + (s.on ? '#offer-sale-summer' : '#offer-home') + '">See today’s offer</a>'), DONE(s, 'Offer page opened')) },
+  { ex:'Beta feature', ui:'Data attribute', about:'If the editor button’s <code>data-channel</code> contains <code>beta</code>, join the beta.',
+    render:s => STACK(ROW(B('editor-button', 'Try the new editor', 'noop', {cls:'secondary', attrs:' data-channel="' + (s.on ? 'beta-2026' : 'stable') + '"'}), B('join-beta-button', 'Join beta', 'run')), DONE(s, 'You joined the beta')),
+    act:{ noop:() => {} } }
+]},
+{ id:692, name:'verifyClassNameIf', title:'Element has class name', template:'Check that the #{label} has class name #{test-data}', variants:[
+  { ex:'Reviews tab', ui:'Tabs', about:'If the Reviews tab has the class <code>active</code>, open the review form.',
+    render:s => STACK('<div class="tabs-ui" role="tablist"><button type="button" role="tab" class="tab' + (s.on ? '' : ' active') + '" id="details-tab">Details</button><button type="button" role="tab" class="tab' + (s.on ? ' active' : '') + '" id="reviews-tab" data-testid="reviews-tab">Reviews</button></div>' +
+      '<div class="tab-panel">' + (s.on ? NOTE('4.5 out of 5 from 120 reviews') : NOTE('A bright desk lamp with three light levels.')) + '</div>', ROW(B('write-review-button', 'Write a review', 'run')), DONE(s, 'Review form opened')) },
+  { ex:'Highlighted row', ui:'Table', about:'If the first order row has the class <code>highlight</code>, remove the highlight.',
+    render:s => STACK('<div class="tbl-wrap"><table><thead><tr><th>Order</th><th>Total</th></tr></thead><tbody><tr id="order-row-1" data-testid="order-row-1" class="' + (s.on && !s.done ? 'highlight' : '') + '"><td>#5001</td><td>$84</td></tr><tr><td>#5000</td><td>$19</td></tr></tbody></table></div>',
+      ROW(B('remove-highlight-button', 'Remove highlight', 'run', {cls:'secondary'})), DONE(s, 'Highlight removed')) }
+]},
+{ id:693, name:'verifyCSSValueIf', title:'CSS property has value', template:'Check that the #{label} displays #{test-data} for css property name @{attribute}', variants:[
+  { ex:'Price colour', ui:'Styled text', about:'If the price has <code>color</code> = <code>rgb(200, 30, 30)</code>, show the discount details.',
+    render:s => STACK('<div class="fixed-card"><p style="margin:0 0 4px">Desk lamp</p><p id="price-label" data-testid="price-label" style="margin:0;font-weight:700;font-size:1.3rem;color:' + (s.on ? 'rgb(200, 30, 30)' : 'rgb(40, 40, 40)') + '">$24.00</p></div>',
+      ROW(B('see-discount-button', 'See discount', 'run')), DONE(s, 'Discount details shown')) },
+  { ex:'Unread mail', ui:'Bold text', about:'If the mail subject has <code>font-weight</code> = <code>700</code>, mark it as read.',
+    render:s => STACK(BOX('<p id="mail-subject" data-testid="mail-subject" style="margin:0;font-weight:' + (s.on && !s.done ? 700 : 400) + '">Your invoice is ready</p>'),
+      ROW(B('mark-as-read-button', 'Mark as read', 'run', {cls:'secondary'})), DONE(s, 'Mail marked as read')) }
+]},
+{ id:586, name:'ai_verify_if', title:'AI Verification', template:'AI Verification: #{description} (IDs 586 and 594)', variants:[
+  { ex:'Product rating', ui:'Stars', about:'Use the description <code>the product rating is 4 stars or higher</code>. If it is, add the product to the wishlist.',
+    render:s => { const r = s.on ? 4.5 : 2, full = Math.floor(r);
+      let st = ''; for(let i = 1; i <= 5; i++) st += '<span class="' + (i <= full ? '' : 'off') + '">★</span>';
+      return STACK(BOX('<h3>Desk lamp</h3><div class="stars" id="product-rating" aria-label="' + r + ' out of 5">' + st + '</div>' + NOTE(r + ' out of 5')), ROW(B('add-to-wishlist-button', 'Add to wishlist', 'run')), DONE(s, 'Added to wishlist')); } },
+  { ex:'Sales chart', ui:'Chart', about:'Use the description <code>the sales chart shows sales going up</code>. If it does, share the report.',
+    render:s => { const h = s.on ? [20, 35, 50, 70, 92] : [92, 70, 50, 35, 20];
+      const bars = h.map((v, i) => '<rect x="' + (14 + i * 46) + '" y="' + (110 - v) + '" width="30" height="' + v + '" rx="3" fill="currentColor"/>').join('');
+      return STACK('<svg id="sales-chart" viewBox="0 0 250 120" width="100%" style="max-width:320px;color:var(--accent)" role="img" aria-label="Sales chart, Jan to May">' + bars + '<line x1="6" y1="110" x2="244" y2="110" stroke="var(--line)"/></svg>',
+        NOTE('Sales, January to May'), ROW(B('share-report-button', 'Share report', 'run')), DONE(s, 'Report shared')); } }
+]},
+{ id:812, name:'if_not_signed_in_auth_profile', title:'Not signed in', template:'If not signed in with auth profile #{auth_profile}', variants:[
+  { ex:'Header sign-in', ui:'Login form', about:'If you are not signed in, sign in with the test account.',
+    init:s => { s.signedIn = !s.on; s.email = ''; s.pw = ''; s.err = ''; },
+    render:s => STACK('<div class="hint-card">Test account: demo@example.com, password Demo123!</div>', s.signedIn
+      ? '<p class="indicator" id="signed-in-user">Signed in as Demo user</p>' + ROW(B('sign-out-button', 'Sign out', 'out', {cls:'secondary'}))
+      : ROW(IN('login-email-field', 'Email', s.email, {bind:'email', type:'email'}), IN('login-password-field', 'Password', s.pw, {bind:'pw', type:'password'})) + (s.err ? ERR('login-error', s.err) : '') + ROW(B('sign-in-submit-button', 'Sign in', 'signin')),
+      DONE(s, 'Signed in')),
+    act:{ signin:s => { if((s.email || '').trim().toLowerCase() === 'demo@example.com' && s.pw === 'Demo123!'){ s.signedIn = true; s.done = true; s.err = ''; } else s.err = 'Wrong email or password'; },
+          out:s => { s.signedIn = false; s.email = ''; s.pw = ''; } } },
+  { ex:'Checkout sign-in', ui:'Popup login', about:'If you are not signed in, sign in from the checkout popup before placing the order.',
+    init:s => { s.signedIn = !s.on; s.email = ''; s.pw = ''; s.err = ''; s.placed = false; },
+    render:s => STACK('<div class="hint-card">Test account: demo@example.com, password Demo123!</div>', '<ul class="list"><li>Desk lamp<span>$24</span></li></ul>',
+      s.signedIn ? ROW(B('place-order-button', 'Place order', 'place')) + (s.placed ? OK('order-placed', 'Order placed') : '')
+      : '<div class="dialog-backdrop"><div class="dialog" role="dialog" aria-label="Sign in to check out" id="login-dialog" data-testid="login-dialog"><h3>Sign in to check out</h3>' +
+        IN('checkout-email-field', 'Email', s.email, {bind:'email', type:'email'}) + '<div style="height:8px"></div>' + IN('checkout-password-field', 'Password', s.pw, {bind:'pw', type:'password'}) +
+        (s.err ? '<div style="height:8px"></div>' + ERR('login-error', s.err) : '') + '<div style="height:10px"></div>' + B('checkout-sign-in-button', 'Sign in', 'signin') + '</div></div>',
+      DONE(s, 'Signed in')),
+    act:{ signin:s => { if((s.email || '').trim().toLowerCase() === 'demo@example.com' && s.pw === 'Demo123!'){ s.signedIn = true; s.done = true; s.err = ''; } else s.err = 'Wrong email or password'; },
+          place:s => { s.placed = true; } } }
+]}
+];
+
+const SC = [];
+TEMPLATES.forEach(tp => tp.variants.forEach((v, i) => {
+  v.key = 'if-' + tp.id + '-' + (i + 1); v.tp = tp; v.num = i + 1;
+  v.act = Object.assign({ run:s => { s.done = true; } }, v.act || {});
+  SC.push(v);
+}));
+
+/* ---------- State ---------- */
+const STATE = {};
+const params = new URLSearchParams(location.search);
+const firstHash = location.hash.slice(1);
+function getState(sc){
+  if(!STATE[sc.key]){
+    STATE[sc.key] = { on: !(sc.key === firstHash && params.get('state') === 'false') };
+    resetState(sc);
+  }
+  return STATE[sc.key];
+}
+function resetState(sc){ const s = STATE[sc.key]; s.done = false; s.paid = false; if(sc.init) sc.init(s); }
+
+function syncUrl(sc){
+  try{
+    const u = new URL(location.href);
+    SC.forEach(x => { if(x.urlParam) u.searchParams.delete(x.urlParam[0]); });
+    if(sc && sc.urlParam && getState(sc).on) u.searchParams.set(sc.urlParam[0], sc.urlParam[1]);
+    if(u.href !== location.href) history.replaceState(null, '', u.href);
+  }catch(e){}
+}
+function syncTitle(sc){
+  document.title = sc ? (sc.pageTitle ? sc.pageTitle(getState(sc)) : sc.tp.title + ': ' + sc.ex + ' – Conditions practice page') : 'Conditions practice page';
+}
+
+/* ---------- Render ---------- */
+function renderNav(current){
+  let h = '<a href="#"' + (current ? '' : ' aria-current="page"') + '>All scenarios</a>';
+  TEMPLATES.forEach(tp => {
+    h += '<div class="ngroup">' + esc(tp.title) + ' <span>(ID ' + tp.id + ')</span></div>';
+    tp.variants.forEach(v => { h += '<a class="sub" href="#' + v.key + '"' + (current === v ? ' aria-current="page"' : '') + '>' + esc(v.ex) + '</a>'; });
+  });
+  $('#nav').innerHTML = h;
+}
+function renderOverview(){
+  renderNav(null); syncUrl(null); syncTitle(null);
+  $('#view').innerHTML =
+    '<section class="intro"><h2>How to use this page</h2>' +
+    '<p>Every If template has 2 scenarios here, each built with a different kind of UI. Open a scenario and choose whether the condition is true or false. When it is true, your test should run the If block. When it is false, your test should skip it.</p>' +
+    '<p>The bar under each test area tells you if the If block ran when it should, or ran when it should have been skipped. Use <strong>Random</strong> to test both paths without knowing which one you get.</p></section>' +
+    '<div class="cards">' + TEMPLATES.map(tp => '<article class="card"><h3>' + esc(tp.title) + '</h3><p class="tpl mono">' + esc(tp.template) + ' (ID ' + tp.id + ')</p><ul>' +
+      tp.variants.map(v => '<li><a href="#' + v.key + '"><span>' + esc(v.ex) + '</span><span class="ui-tag">' + esc(v.ui) + '</span></a></li>').join('') + '</ul></article>').join('') + '</div>';
+}
+function pill(s){ return '<span class="state-pill ' + s.on + '" id="condPill">' + (s.on ? 'Condition is true: the If block should run' : 'Condition is false: the If block should be skipped') + '</span>'; }
+function meter(s){
+  if(s.on) return s.done ? '<strong class="good">If block ran (correct)</strong>' : 'If block has not run yet';
+  return s.done ? '<strong class="bad">If block ran, but it should have been skipped</strong>' : '<span class="good">If block skipped (correct so far)</span>';
+}
+function renderScenario(sc){
+  renderNav(sc);
+  const s = getState(sc);
+  syncUrl(sc); syncTitle(sc);
+  $('#view').innerHTML =
+    '<section class="sc-head"><h2>' + esc(sc.tp.title) + ': ' + esc(sc.ex) + '</h2>' +
+    '<p class="tpl mono">' + esc(sc.tp.template) + ' (' + esc(sc.tp.name) + ', ID ' + sc.tp.id + ')</p>' +
+    '<p style="margin:8px 0 0">' + sc.about + '</p>' +
+    '<div class="siblings" aria-label="Scenarios for this template">' + sc.tp.variants.map(v => '<a href="#' + v.key + '"' + (v === sc ? ' aria-current="page"' : '') + '>' + v.num + '. ' + esc(v.ex) + ' (' + esc(v.ui) + ')</a>').join('') + '</div>' +
+    '<div class="setup"><div class="seg-wrap">Condition<div class="seg" role="group" aria-label="Condition">' +
+      '<button type="button" data-state="true" aria-pressed="' + s.on + '">True</button><button type="button" data-state="false" aria-pressed="' + !s.on + '">False</button></div></div>' +
+      '<button class="btn" type="button" id="randomBtn">Random</button>' +
+      '<button class="btn" type="button" id="resetBtn">Reset scenario</button>' +
+    '</div></section>' +
+    '<section class="box" aria-label="Test area"><div class="box-head"><h3>Test area</h3>' + pill(s) + '</div>' +
+      '<div class="stage" id="stage">' + sc.render(s) + '</div>' +
+      '<div class="meter"><span id="meter">' + meter(s) + '</span></div></section>';
+}
+function refreshStage(sc){
+  const s = getState(sc);
+  const activeId = document.activeElement && document.activeElement.id;
+  $('#stage').innerHTML = sc.render(s);
+  $('#meter').innerHTML = meter(s);
+  $('#condPill').outerHTML = pill(s);
+  syncTitle(sc);
+  if(activeId){ const el = $('#stage').querySelector('#' + CSS.escape(activeId)); if(el) el.focus(); }
+}
+const current = () => SC.find(x => x.key === location.hash.slice(1));
+function route(){ const sc = current(); sc ? renderScenario(sc) : renderOverview(); window.scrollTo(0, 0); }
+function setOn(sc, on){ const s = getState(sc); s.on = on; resetState(sc); renderScenario(sc); }
+
+/* ---------- Events ---------- */
+window.addEventListener('hashchange', route);
+$('#view').addEventListener('click', e => {
+  const sc = current(); if(!sc) return;
+  const s = getState(sc);
+  const el = e.target.closest('[data-do]');
+  if(el && !el.disabled && $('#stage').contains(el)){
+    if(el.tagName === 'A') e.preventDefault();
+    const fn = sc.act[el.dataset.do];
+    if(fn){ fn(s, el); refreshStage(sc); }
+    return;
+  }
+  const st = e.target.closest('[data-state]');
+  if(st){ setOn(sc, st.dataset.state === 'true'); return; }
+  if(e.target.id === 'randomBtn'){ setOn(sc, Math.random() < 0.5); toast('Condition set at random'); return; }
+  if(e.target.id === 'resetBtn'){ resetState(sc); renderScenario(sc); toast('Scenario reset'); }
+});
+$('#view').addEventListener('input', e => {
+  const sc = current(); if(!sc) return;
+  if(e.target.dataset.bind) getState(sc)[e.target.dataset.bind] = e.target.value;
+});
+route();
+
+</script>
+</body>
+</html>
